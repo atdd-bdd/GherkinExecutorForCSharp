@@ -6,6 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseVSTest>true</UseVSTest>
+	<StartupObject>GherkinExecutorForCSharp.Translate</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="GherkinExecutor\" />
+  </ItemGroup>
+
+	
+
 
 </Project>
