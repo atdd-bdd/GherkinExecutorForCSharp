@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
 
 namespace GherkinExecutorForCSharp
 {
@@ -72,6 +73,7 @@ namespace GherkinExecutorForCSharp
         public void TranslateInTests(string name)
         {
             FindFeatureDirectory(name);
+            Console.WriteLine("FD is " + name );
 
             linesToAddForDataAndGlue.AddRange(Configuration.LinesToAddForDataAndGlue);
             dataIn = new InputIterator(name, featureDirectory);
@@ -291,25 +293,14 @@ namespace GherkinExecutorForCSharp
         private void ActOnFeature(string fullName)
         {
             if (ActOnFeatureFirstHalf(fullName)) return;
-                 TestPrint("package " + packagePath + ";");
-            switch (Configuration.TestFramework)
-            {
-                case "JUnit4":
-                    TestPrint("import org.junit.Test;");
-                    break;
-                case "TestNG":
-                    TestPrint("import org.testng.annotations.Test;");
-                    break;
-                default:
-                    TestPrint("import org.junit.jupiter.api.Test;");
-                    break;
-            }
-            TestPrint("import java.util.List;");
+                 TestPrint("namespace " + packagePath + "{");
+            //TestPrint("import java.util.List;");
             if (Configuration.LogIt)
             {
-                TestPrint("import java.io.FileWriter;");
-                TestPrint("import java.io.IOException;");
+                //TestPrint("import java.io.FileWriter;");
+                //TestPrint("import java.io.IOException;");
             }
+ 
             TestPrint("class " + fullName + "{");
             TestPrint(LogIt());
             TestPrint("");
@@ -328,9 +319,10 @@ namespace GherkinExecutorForCSharp
             featureActedOn = true;
             packagePath = Configuration.AddToPackageName + Configuration.PackageName + "." + featurePackagePath + featureName;
             PrintFlow("Package is " + packagePath);
-            string testPathname = Configuration.TestSubDirectory + featureDirectory + featureName + "/" + featureName + ".java";
+            string testPathname = Configuration.TestSubDirectory + featureDirectory + featureName + "/" + featureName + ".cs";
             PrintFlow(" Writing " + testPathname);
             string templateFilename = Configuration.TestSubDirectory + featureDirectory + featureName + "/" + featureName + "_glue.tmpl";
+            PrintFlow("Glue is " + templateFilename);
             directoryName = Configuration.TestSubDirectory + featureDirectory + featureName;
             PrintFlow("Directory " + directoryName + " ");
             try
@@ -339,7 +331,7 @@ namespace GherkinExecutorForCSharp
                 if (!result)
                     Trace("Possible error in creating directory " + directoryName);
                 testFile = new StreamWriter(testPathname, false);
-                templateConstruct.openGlueFile(templateFilename);
+                templateConstruct.OpenGlueFile(templateFilename);
             }
             catch (IOException e)
             {
@@ -399,7 +391,18 @@ namespace GherkinExecutorForCSharp
             }
             if (!fullNameToUse.StartsWith("Background") && !fullNameToUse.StartsWith("Cleanup"))
             {
-                TestPrint("    [Test]");
+                switch (Configuration.TestFramework)
+                {
+                    case "MSTest":
+                        TestPrint("    [TestMethod]");
+                        break;
+                    case "NUnit":
+                        TestPrint("    [Test]");
+                        break;
+                    default:
+                        TestPrint("    [TestMethod]");
+                        break;
+                }
                 TestPrint("    public void Test_" + fullNameToUse + "(){");
                 TestPrint("         " + glueClass + " " + glueObject + " = new " + glueClass + "();");
             }
@@ -438,7 +441,7 @@ namespace GherkinExecutorForCSharp
 
         private void Trace(string value)
         {
-            if (Configuration.TraceOn)
+            if (Configuration.TraceOn || true)
             {
                 Console.WriteLine(value);
             }
@@ -549,6 +552,7 @@ namespace GherkinExecutorForCSharp
             }
             TestPrint("        }");   // End last scenario
             TestPrint("    }"); // End the class
+            TestPrint("}"); // end the namespace 
             TestPrint("");
             try
             {
@@ -570,6 +574,8 @@ namespace GherkinExecutorForCSharp
         private Pair<string, List<string>> LookForFollow()
         {
             string line = dataIn.Peek();
+            Trace("Look for follow " + line);
+
             List<string> empty = new List<string>();
             while (!string.IsNullOrEmpty(line) && line[0] == '#')
             {
@@ -689,6 +695,7 @@ namespace GherkinExecutorForCSharp
                 case "Short":
                     return "short.Parse(" + value + ")";
                 case "Integer":
+                case "Int32":
                     return "int.Parse(" + value + ")";
                 case "Long":
                     return "long.Parse(" + value + ")";
@@ -726,6 +733,8 @@ namespace GherkinExecutorForCSharp
             string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
             Configuration.CurrentDirectory = Path.GetFullPath(Path.Combine(currentDirectory, @"..\..\.."));
             PrintFlow("Project directory is " + Configuration.CurrentDirectory);
+            Environment.CurrentDirectory = Configuration.CurrentDirectory;
+            PrintFlow("Current directory is now " + AppDomain.CurrentDomain.BaseDirectory); 
 
             ProcessArguments(args);
             if (Configuration.SearchTree && !string.IsNullOrEmpty(Configuration.StartingFeatureDirectory))
@@ -1079,24 +1088,26 @@ namespace GherkinExecutorForCSharp
 
         class StepConstruct
         {
-            private int stepNumberInScenario = 0;
-            private string glueObject = "glueObject"; // Placeholder for the glueObject
-            private Translate other;
+            private int stepNumberInScenario;
+            private string glueObject; 
+            private Translate translate;
             private TemplateConstruct templateConstruct;
 
-            public StepConstruct(Translate other)
+            public StepConstruct(Translate translate)
             {
-                this.other = other;
-                templateConstruct = new TemplateConstruct(other);
-        }
+                this.translate = translate;
+                templateConstruct = translate.templateConstruct;
+                glueObject = translate.glueObject;
+                stepNumberInScenario = translate.stepNumberInScenario; 
+            }
 
         public void ActOnStep(string fullName, List<string> comment)
             {
                 stepNumberInScenario += 1;
-                var follow = LookForFollow();
-                string followType = follow.Item1;
-                List<string> table = follow.Item2;
-                other.TestPrint("");
+                Pair<String, List<String>> follow = translate.LookForFollow();
+                string followType = follow.getFirst();
+                List<string> table = follow.GetSecond();
+                translate.TestPrint("");
                 switch (followType)
                 {
                     case "TABLE":
@@ -1109,7 +1120,7 @@ namespace GherkinExecutorForCSharp
                         CreateTheStringCode(comment, table, fullName);
                         break;
                     default:
-                        other.Error("Internal Error - Follow type " + followType);
+                        translate.Error("Internal Error - Follow type " + followType);
                         break;
                 }
             }
@@ -1130,29 +1141,29 @@ namespace GherkinExecutorForCSharp
                 string s = stepNumberInScenario.ToString();
                 string dataType = "List<string>";
                 string dataTypeInitializer = "new List<string>";
-                other.TestPrint($"        List<string> stringList{s} = {dataTypeInitializer}(");
+                translate.TestPrint($"        List<string> stringList{s} = {dataTypeInitializer}(");
                 string comma = "";
                 foreach (string line in table)
                 {
-                    other.TestPrint($"            {comma}\"{line}\"");
+                    translate.TestPrint($"            {comma}\"{line}\"");
                     comma = ",";
                 }
-                other.TestPrint("            );");
-                other.TestPrint($"        {glueObject}.{fullName}(stringList{s});");
+                translate.TestPrint("            );");
+                translate.TestPrint($"        {glueObject}.{fullName}(stringList{s});");
                 templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, "String");
             }
 
             private void StringToString(List<string> table, string fullName)
             {
                 string s = stepNumberInScenario.ToString();
-                other.TestPrint($"        string string{s} =");
-                other.TestPrint("            @\"\"\"");
+                translate.TestPrint($"        string string{s} =");
+                translate.TestPrint("            @\"\"\"");
                 foreach (string line in table)
                 {
-                    other.TestPrint($"            {line}");
+                    translate.TestPrint($"            {line}");
                 }
-                other.TestPrint("            \"\"\".Trim();");
-                other.TestPrint($"        {glueObject}.{fullName}(string{s});");
+                translate.TestPrint("            \"\"\".Trim();");
+                translate.TestPrint($"        {glueObject}.{fullName}(string{s});");
                 templateConstruct.MakeFunctionTemplate("string", fullName);
             }
 
@@ -1162,15 +1173,15 @@ namespace GherkinExecutorForCSharp
                 string dataType = "List<List<string>>";
                 string dataTypeInitializer = "new List<List<string>>";
 
-                other.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}(");
+                translate.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}(");
                 string comma = "";
                 foreach (string line in table)
                 {
                     ConvertBarLineToList(line, comma);
                     comma = ",";
                 }
-                other.TestPrint("            );");
-                other.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
+                translate.TestPrint("            );");
+                translate.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
                 templateConstruct.MakeFunctionTemplateObject(dataType, fullName, className);
                 CreateConvertTableToListOfListOfObjectMethod(className);
             }
@@ -1181,15 +1192,15 @@ namespace GherkinExecutorForCSharp
                 string dataType = "List<List<string>>";
                 string dataTypeInitializer = "new List<List<string>>";
 
-                other.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}(");
+                translate.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}(");
                 string comma = "";
                 foreach (string line in table)
                 {
                     ConvertBarLineToList(line, comma);
                     comma = ",";
                 }
-                other.TestPrint("            );");
-                other.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
+                translate.TestPrint("            );");
+                translate.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
                 templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, "List<string>");
             }
 
@@ -1207,7 +1218,7 @@ namespace GherkinExecutorForCSharp
                     case "ListOfListOfObject":
                         if (comment.Count < 2)
                         {
-                            other.Error("No class name specified");
+                            translate.Error("No class name specified");
                             return;
                         }
                         className = comment[1];
@@ -1220,7 +1231,7 @@ namespace GherkinExecutorForCSharp
                     case "ListOfObject":
                         if (comment.Count < 2)
                         {
-                            other.Error("No class name specified");
+                            translate.Error("No class name specified");
                             return;
                         }
                         className = comment[1];
@@ -1233,7 +1244,7 @@ namespace GherkinExecutorForCSharp
                                 compare = true;
                             else if (!action.Equals("transpose", StringComparison.OrdinalIgnoreCase))
                             {
-                               other.Error("Action not recognized " + action);
+                               translate.Error("Action not recognized " + action);
                             }
                             else
                             {
@@ -1243,7 +1254,7 @@ namespace GherkinExecutorForCSharp
                         TableToListOfObject(table, fullName, className, transpose, compare);
                         break;
                     default:
-                        other.Error("Option not found, default to ListOfList " + option);
+                        translate.Error("Option not found, default to ListOfList " + option);
                         TableToListOfList(table, fullName);
                         break;
                 }
@@ -1252,38 +1263,41 @@ namespace GherkinExecutorForCSharp
             private void CreateConvertTableToListOfListOfObjectMethod(string toClass)
             {
                 var variable = new DataConstruct.DataValues("s", "s", toClass);
-                string convert = other.MakeValueFromString(variable, true);
+                string convert = translate.MakeValueFromString(variable, true);
 
                 string template =
                     """
-                    public static List<List<{toClass}>> ConvertList(List<List<string>> stringList)
-                    {{List < List <{toClass}>> classList = new List<List<{toClass}>>();
+                    public static List<List<CLASSNAME>> ConvertList(List<List<string>> stringList)
+                    {{List < List <CLASSNAME>> classList = new List<List<CLASSNAME>>();
                         foreach (List<string> innerList in stringList)
                         {{
-                            List<{toClass}> innerClassList = new List<{toClass}>();
+                            List<CLASSNAME> innerClassList = new List<CLASSNAME>();
                             foreach (string s in innerList)
                             {{
-                                innerClassList.Add({convert});
+                                innerClassList.Add({CONVERT});
                             }
                             classList.Add(innerClassList);
                         }
                         return classList;
-                    }}
+                    }
                     """;
-                // Add template to the appropriate collection
+                    template = template.Replace("CLASSNAME", toClass);
+                template = template.Replace("CONVERT", convert);
+                translate.linesToAddToEndOfGlue.Add(template);
+
             }
 
             private void TableToString(List<string> table, string fullName)
             {
                 string s = stepNumberInScenario.ToString();
-                other.TestPrint($"        string table{s} =");
-                other.TestPrint("            @\"\"\"");
+                translate.TestPrint($"        string table{s} =");
+                translate.TestPrint("            @\"\"\"");
                 foreach (string line in table)
                 {
-                    other.TestPrint($"            {line}");
+                    translate.TestPrint($"            {line}");
                 }
-                other.TestPrint("            \"\"\".Trim();");
-                other.TestPrint($"        {glueObject}.{fullName}(table{s});");
+                translate.TestPrint("            \"\"\".Trim();");
+                translate.TestPrint($"        {glueObject}.{fullName}(table{s});");
                 // other.TestPrint("");
                 templateConstruct.MakeFunctionTemplate("string", fullName);
             }
@@ -1291,25 +1305,25 @@ namespace GherkinExecutorForCSharp
             private void ConvertBarLineToList(string lineIn, string commaIn)
             {
                 string line = lineIn.Split('#')[0].Trim();
-                other.TestPrint($"           {commaIn}new List<string>(");
-                List<string> elements = other.ParseLine(line);
+                translate.TestPrint($"           {commaIn}new List<string>(");
+                List<string> elements = translate.ParseLine(line);
                 string comma = "";
                 foreach (string element in elements)
                 {
-                    other.TestPrint($"            {comma}\"{element}\"");
+                    translate.TestPrint($"            {comma}\"{element}\"");
                     comma = ",";
                 }
-                other.TestPrint("            )");
+                translate.TestPrint("            )");
             }
 
             private void TableToListOfObject(List<string> table, string fullName, string className, bool transpose, bool compare)
             {
-                other.Trace("TableToListOfObject classNames " + className);
+                translate.Trace("TableToListOfObject classNames " + className);
                 string s = stepNumberInScenario.ToString();
                 string dataType = $"List<{className}>";
                 string dataTypeInitializer = "new List<" + className + ">(";
 
-                other.TestPrint($"        List<{className}> objectList{s} = {dataTypeInitializer}");
+                translate.TestPrint($"        List<{className}> objectList{s} = {dataTypeInitializer}");
                 bool inHeaderLine = true;
                 List<List<string>> dataList = ConvertToListList(table, transpose);
                 List<string> headers = new List<string>();
@@ -1321,9 +1335,9 @@ namespace GherkinExecutorForCSharp
                         headers = row;
                         foreach (string dataName in row)
                         {
-                            if (!FindDataClassName(className, other.MakeName(dataName)))
+                            if (!FindDataClassName(className, translate.MakeName(dataName)))
                             {
-                               other.Error("Data name " + dataName + " not in Data for " + className);
+                               translate.Error("Data name " + dataName + " not in Data for " + className);
                             }
                         }
 
@@ -1334,8 +1348,8 @@ namespace GherkinExecutorForCSharp
                     ConvertBarLineToParameter(headers, row, className, comma, compare);
                     comma = ",";
                 }
-                other.TestPrint("            );");
-                other.TestPrint($"        {glueObject}.{fullName}(objectList{s});");
+                translate.TestPrint("            );");
+                translate.TestPrint($"        {glueObject}.{fullName}(objectList{s});");
 
                 templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, className);
             }
@@ -1345,7 +1359,7 @@ namespace GherkinExecutorForCSharp
                 List<List<string>> temporary = new List<List<string>>();
                 foreach (string line in table)
                 {
-                    temporary.Add(other.ParseLine(line));
+                    temporary.Add(translate.ParseLine(line));
                 }
                 List<List<string>> result = temporary;
                 if (transpose)
@@ -1358,7 +1372,7 @@ namespace GherkinExecutorForCSharp
             private bool FindDataClassName(string className, string dataName)
             {
                 string compare = className + "#" + dataName;
-                foreach (string value in other.classDataNames)
+                foreach (string value in translate.classDataNames)
                 {
                     if (value.Equals(compare))
                         return true;
@@ -1368,27 +1382,27 @@ namespace GherkinExecutorForCSharp
 
             private void ConvertBarLineToParameter(List<string> headers, List<string> values, string className, string comma, bool compare)
             {
-                other.Trace("Headers " + headers);
+                translate.Trace("Headers " + headers);
                 int size = headers.Count;
                 if (headers.Count > values.Count)
                 {
                     size = values.Count;
-                    other.Error("not sufficient values, using what is there" + values);
+                    translate.Error("not sufficient values, using what is there" + values);
                 }
-                other.TestPrint($"            {comma} new {className}.Builder()");
+                translate.TestPrint($"            {comma} new {className}.Builder()");
                 if (compare)
-                    other.TestPrint("             .SetCompare()");
+                    translate.TestPrint("             .SetCompare()");
                 for (int i = 0; i < size; i++)
                 {
                     string value = "\"" + values[i].Replace(Configuration.SpaceCharacters, ' ') + "\"";
-                    other.TestPrint($"                .{other.MakeBuildName(headers[i])}({value})");
+                    translate.TestPrint($"                .{translate.MakeBuildName(headers[i])}({value})");
                 }
-                other.TestPrint("                .Build()");
+                translate.TestPrint("                .Build()");
             }
 
             private void NoParameter(string fullName)
             {
-                other.TestPrint($"        {glueObject}.{fullName}();");
+                translate.TestPrint($"        {glueObject}.{fullName}();");
                 templateConstruct.MakeFunctionTemplateNothing("", fullName);
             }
 
@@ -1407,11 +1421,7 @@ namespace GherkinExecutorForCSharp
                 return transposed;
             }
 
-            private Tuple<string, List<string>> LookForFollow()
-            {
-                // Add implementation for LookForFollow method
-                return new Tuple<string, List<string>>("NOTHING", new List<string>());
-            }
+          
 
         }
 
@@ -1428,6 +1438,7 @@ namespace GherkinExecutorForCSharp
             {
                 try
                 {
+                    Console.Write("Writing to glue file " + line + '\n');
                     glueTemplateFile.WriteLine(line);
                 }
                 catch (IOException e)
@@ -1474,7 +1485,7 @@ namespace GherkinExecutorForCSharp
             {
                 if (CheckForExistingTemplate(dataType, fullName)) return; // already have a prototype
                 other.glueFunctions[fullName] = dataType;
-                TemplatePrint($"    void {fullName}(){{");
+                TemplatePrint($"    public void {fullName}(){{");
                 TemplatePrint($"        Console.WriteLine(\"---  \" + \"{fullName}\");");
                 if (Configuration.LogIt)
                     TemplatePrint($"        Log(\"---  \" + \"{fullName}\");");
@@ -1488,7 +1499,7 @@ namespace GherkinExecutorForCSharp
             {
                 if (CheckForExistingTemplate(dataType, fullName)) return; // already have a prototype
                 other.glueFunctions[fullName] = dataType;
-                TemplatePrint($"    void {fullName}({dataType} values ) {{");
+                TemplatePrint($"    public void {fullName}({dataType} values ) {{");
                 TemplatePrint($"        Console.WriteLine(\"---  \" + \"{fullName}\");");
                 if (Configuration.LogIt)
                 {
@@ -1517,7 +1528,7 @@ namespace GherkinExecutorForCSharp
             {
                 if (CheckForExistingTemplate(dataType, fullName)) return; // already have a prototype
                 other.glueFunctions[fullName] = dataType;
-                TemplatePrint($"    void {fullName}({dataType} value ) {{");
+                TemplatePrint($"    public void {fullName}({dataType} value ) {{");
                 TemplatePrint($"        Console.WriteLine(\"---  \" + \"{fullName}\");");
                 if (Configuration.LogIt)
                 {
@@ -1570,6 +1581,7 @@ namespace GherkinExecutorForCSharp
                     TemplatePrint(line);
                 }
                 TemplatePrint("    }");   // End the class
+                TemplatePrint("}");   // End the namespace
                 try
                 {
                     other.testFile.Close();
@@ -1581,9 +1593,18 @@ namespace GherkinExecutorForCSharp
                 }
             }
 
-            public void openGlueFile(string templateFilename)
+            public void OpenGlueFile(string templateFilename)
             {
-                glueTemplateFile = new StreamWriter(templateFilename, false); 
+                try
+                {
+                    Console.Write("Opening glue file " + templateFilename);
+                    glueTemplateFile = new StreamWriter(templateFilename, false);
+                }
+                catch(Exception e)
+                {
+                    other.Error("IO Exception in setting up the files " + e);
+                    other.Error(" Writing " + templateFilename);
+                }
             }
         }
 
@@ -1682,6 +1703,7 @@ namespace GherkinExecutorForCSharp
                     CreateConversionMethod(internalClassName, variables);
                 }
                 DataPrintLn("    }");
+                DataPrintLn("}");
                 EndDataFile();
 
                 if (doInternal)
@@ -1694,17 +1716,18 @@ namespace GherkinExecutorForCSharp
             {
                 string code =
                     """
-                    public static List<{className}> ListFromJson(string json)
-                    {{List <{className}> list = new List<{className}>();
+                    public static List<CLASSNAME> ListFromJson(string json)
+                    {List <CLASSNAME> list = new List<CLASSNAME>();
                         json = json.Replace("\\s", "");
                         json = json.Replace("[","").Replace("]","");
-                        string[] jsonObjects = json.Split(new[] {{ "}},\\s*{{" }}, StringSplitOptions.None);
+                        string[] jsonObjects = json.Split(new[] { "},\\s*{" }, StringSplitOptions.None);
                         foreach (string jsonObject in jsonObjects)
-                        {{list.Add({className}.FromJson(jsonObject));
-                        }}
+                        {list.Add(CLASSNAME.FromJson(jsonObject));
+                        }
                         return list;
-                    }}
+                    }
                     """;
+                 code = code.Replace("CLASSNAME", className);
                 DataPrintLn(code);
             }
 
@@ -1712,22 +1735,23 @@ namespace GherkinExecutorForCSharp
             {
                 string code =
                     """
-                    public static string ListToJson(List<{className}> list)
-                    {{StringBuilder jsonBuilder = new StringBuilder();
+                    public static string ListToJson(List<CLASSNAME> list)
+                    {StringBuilder jsonBuilder = new StringBuilder();
                         jsonBuilder.Append("[");
                         
                         for (int i = 0; i < list.Count; i++)
-                        {{jsonBuilder.Append(list[i].ToJson());
+                        {jsonBuilder.Append(list[i].ToJson());
                             if (i < list.Count - 1)
-                            {{
+                            {
                                 jsonBuilder.Append(",");
                             }
-                        }}
+                        }
                         
                         jsonBuilder.Append("]");
                         return jsonBuilder.ToString();
-                    }}
+                    }
                     """;
+                code = code.Replace("CLASSNAME", className); 
                 DataPrintLn(code);
             }
 
@@ -1763,7 +1787,7 @@ namespace GherkinExecutorForCSharp
 
             private void CreateConstructor(List<DataValues> variables, string className)
             {
-                DataPrintLn($"    public {className}() {{ }}");
+                DataPrintLn($"    public {className}() {{}}");
                 DataPrintLn($"    public {className}(");
                 string comma = "";
                 foreach (var variable in variables)
@@ -1802,18 +1826,18 @@ namespace GherkinExecutorForCSharp
                 string firstPart =
                     """
                     public override string ToString()
-                    {{
-                            return "{className} {{"
+                    {
+                            return "CLASSNAME {"
                     """;
-                code.Append(firstPart);
+                code.Append(firstPart.Replace("CLASSNAME", className));
 
                 foreach (var variable in variables)
                 {
                     string middlePart =
                         """
-                        +" {variable.Name} = " + {variable.Name} + " "
+                        +" NAME = " + NAME + " "
                         """;
-                    code.Append(middlePart);
+                    code.Append(middlePart.Replace("NAME", variable.Name));
                 }
                 string endPart =
                     """  
@@ -1832,39 +1856,41 @@ namespace GherkinExecutorForCSharp
             {
                 string firstPart =
                     """
-                    public static {className} FromJson(string json)
-                    {{
-                            {className} instance = new {className}();
+                    public static CLASSNAME FromJson(string json)
+                    {
+                            CLASSNAME instance = new CLASSNAME();
                         
                         json = json.Replace("\\s", "");
-                        string[] keyValuePairs = json.Replace("{{", "").Replace("}}", "").Split(',');
+                        string[] keyValuePairs = json.Replace("{", "").Replace("}", "").Split(',');
                         
                         foreach (string pair in keyValuePairs)
-                        {{string[] entry = pair.Split(':');
+                        {string[] entry = pair.Split(':');
                             string key = entry[0].Replace("\"", "").Trim();
                             string value = entry[1].Replace("\"", "").Trim();
                             
                             switch (key)
-                            {{
+                            {
 
 
                 """;
+                firstPart = firstPart.Replace("CLASSNAME", className);
                 var middlePart = new System.Text.StringBuilder();
                 foreach (var variable in variables)
                 {
                     string start =
                         """
-                        case "{variable.Name}":
-                            instance.{variable.Name} = value;
+                        case "NAME":
+                            instance.NAME = value;
                             break;
                         """;
-                    middlePart.Append(start);
+                    middlePart.Append(start).Replace("NAME", variable.Name);
                 }
 
                 string lastPart =
                     """
                     default:
                         Console.Error.WriteLine("Invalid JSON element " + key);
+                        break; 
                     }
                 }
                 return instance;
@@ -1888,9 +1914,10 @@ namespace GherkinExecutorForCSharp
                 {
                     string middlePart =
                         """
-                        {comma}+"{variable.Name}: " + "\"" + {variable.Name} + "\""
+                        +"NAME: " + "\"" + NAME + "\""
                         """;
-                    code.Append(middlePart);
+                    code.Append(comma);
+                    code.Append(middlePart).Replace("NAME", variable.Name);
                     comma = "         + \",\"";
                 }
                 string lastPart =
@@ -2007,6 +2034,9 @@ namespace GherkinExecutorForCSharp
                         return "int";
                     case "Char":
                         return "char";
+                    case "Integer":
+                        return "Int32"; 
+              
                     default:
                         return s;
                 }
@@ -2050,6 +2080,7 @@ namespace GherkinExecutorForCSharp
                 CreateToStringMethod(variables, className);
 
                 DataPrintLn("    }");
+                DataPrintLn("}");        
                 EndDataFile();
             }
 
@@ -2096,7 +2127,7 @@ namespace GherkinExecutorForCSharp
                 {
                     DataPrintLn($"        {add}{QuoteIt(variable.DataType + space)} ");
                 }
-                DataPrintLn($"        + {QuoteIt("}} ")}; }}");
+                DataPrintLn($"        + {QuoteIt("} ")}; }}");
             }
 
             private void CreateToStringObject(string otherClassName, List<DataValues> variables)
@@ -2131,6 +2162,7 @@ namespace GherkinExecutorForCSharp
                     case "Byte":
                     case "Short":
                     case "Integer":
+                    case "Int32":
                     case "Long":
                     case "Float":
                     case "Double":
@@ -2379,7 +2411,7 @@ namespace GherkinExecutorForCSharp
             public static readonly string PackageName = "gherkinexecutor";
             // high level package in which the tests are placed
 
-            public static readonly string TestSubDirectory = "GherkinExectuor" + PackageName + "/";
+            public static readonly string TestSubDirectory = "GherkinExecutor" + "/";
             // used to put the test files in the directory corresponding to the packageName.
 
             public static readonly string DataDefinitionFileExtension = "cs";   // "tmpl";
@@ -2393,7 +2425,9 @@ namespace GherkinExecutorForCSharp
 
             public static readonly List<string> LinesToAddForDataAndGlue = new List<string>
         {
-            "import java.util.*;" // as an example
+                "using System;",
+                "using System.Collections.Generic;",
+                "using System.Text;"
         };
 
             public static readonly List<string> FeatureFiles = new List<string>

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="GherkinExecutor\" />
+    <Folder Include="GherkinExectuorgherkinexecutor\" />
   </ItemGroup>
 
 	

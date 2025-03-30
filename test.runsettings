@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Specify MSTest settings -->
+  <MSTest>
+    <Timeout>60000</Timeout> <!-- Test timeout in milliseconds -->
+    <ParallelTestCount>4</ParallelTestCount> <!-- Number of tests to run in parallel -->
+    <DefaultTestTimeout>10000</DefaultTestTimeout> <!-- Default timeout for individual tests -->
+    <CaptureDebugTraces>true</CaptureDebugTraces> <!-- Enable debug traces -->
+    <TestSettingsFile>TestSettings.testsettings</TestSettingsFile> <!-- Link to legacy test settings file if needed -->
+  </MSTest>
+	
+		<TestRunParameters>
+			<Parameter name="TestCategory" value="UnitTest" />
+		</TestRunParameters>
+
+</RunSettings>
