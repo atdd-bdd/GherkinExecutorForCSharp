@@ -28,6 +28,14 @@ public class ImportData {
             && !_ImportData.myBigInt.Equals("?DNC?"))
         if (!_ImportData.myBigInt.Equals(this.myBigInt)) result = false;
         return result;  }
+    public override int GetHashCode()
+
+   {
+   int hashCode = 1; 
+      hashCode ^= myWeekday == null ? 0 : myWeekday.GetHashCode();
+    hashCode ^= myBigInt == null ? 0 : myBigInt.GetHashCode();
+return hashCode;
+}
     public class Builder {
         private string myWeekday = "Monday";
         private string myBigInt = "1";
@@ -108,6 +116,18 @@ public static List<ImportData> ListFromJson(string json)
     {list.Add(ImportData.FromJson(jsonObject));
     }
     return list;
+}
+public class ImportDataComparer : IEqualityComparer<ImportData>
+{
+    public bool Equals(ImportData? x, ImportData? y)
+        {
+        if (x == null) return false; 
+        return x.Equals(y);
+        }
+    public int GetHashCode(ImportData obj)
+        {
+        return obj.GetHashCode(); 
+        }
 }
     public ImportDataInternal ToImportDataInternal() {
         return new ImportDataInternal(

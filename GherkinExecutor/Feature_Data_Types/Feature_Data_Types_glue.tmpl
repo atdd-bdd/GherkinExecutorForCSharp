@@ -1,0 +1,32 @@
+namespace gherkinexecutor.Feature_Data_Types {
+using System;
+using System.Collections.Generic;
+using System.Text;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
+public class Feature_Data_Types_glue {
+    const string DNCString = "?DNC?";
+
+
+    public void Given_type_values_are(List<AllTypes> values ) {
+        Console.WriteLine("---  " + "Given_type_values_are");
+        foreach (AllTypes value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              AllTypesInternal i = value.ToAllTypesInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Then_this_should_be_equal(List<AllTypes> values ) {
+        Console.WriteLine("---  " + "Then_this_should_be_equal");
+        foreach (AllTypes value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              AllTypesInternal i = value.ToAllTypesInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    }
+}

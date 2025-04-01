@@ -1,0 +1,56 @@
+namespace gherkinexecutor.Feature_Tic_Tac_Toe_Game {
+using System;
+using System.Collections.Generic;
+using System.Text;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
+public class Feature_Tic_Tac_Toe_Game_glue {
+    const string DNCString = "?DNC?";
+
+
+    public void Given_board_is(List<List<string>> values ) {
+        Console.WriteLine("---  " + "Given_board_is");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    public void When_move_is(List<Move> values ) {
+        Console.WriteLine("---  " + "When_move_is");
+        foreach (Move value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              MoveInternal i = value.ToMoveInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Then_board_is_now(string value ) {
+        Console.WriteLine("---  " + "Then_board_is_now");
+        Console.WriteLine(value);
+        throw new NotImplementedException();
+    }
+
+    public void When_one_move_is(List<List<string>> values ) {
+        Console.WriteLine("---  " + "When_one_move_is");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    public void When_moves_are(List<Move> values ) {
+        Console.WriteLine("---  " + "When_moves_are");
+        foreach (Move value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              MoveInternal i = value.ToMoveInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    }
+}

@@ -1,0 +1,53 @@
+namespace gherkinexecutor.Feature_Background {
+using System;
+using System.Collections.Generic;
+using System.Text;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
+public class Feature_Background_glue {
+    const string DNCString = "?DNC?";
+
+
+    public void Given_Background_function_sets_a_value(List<List<string>> values ) {
+        Console.WriteLine("---  " + "Given_Background_function_sets_a_value");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Given_value_for_cleanup_should_be_set_to(List<List<string>> values ) {
+        Console.WriteLine("---  " + "Given_value_for_cleanup_should_be_set_to");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Given_a_regular_function(){
+        Console.WriteLine("---  " + "Given_a_regular_function");
+        throw new NotImplementedException();
+    }
+
+    public void Then_background_should_set_value_to(List<List<string>> values ) {
+        Console.WriteLine("---  " + "Then_background_should_set_value_to");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    public void And_set_a_value_for_cleanup(List<List<string>> values ) {
+        Console.WriteLine("---  " + "And_set_a_value_for_cleanup");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    }
+}

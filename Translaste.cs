@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
+using Microsoft.Testing.Platform.Extensions.Messages;
 
 namespace GherkinExecutorForCSharp
 {
@@ -680,39 +681,66 @@ namespace GherkinExecutorForCSharp
             switch (variable.DataType)
             {
                 case "String":
+                case "string":
                     return value;
                 case "int":
                     return "int.Parse(" + value + ")";
+                case "uint":
+                    return "uint.Parse(" + value + ")";
                 case "double":
                     return "double.Parse(" + value + ")";
+                case "float":
+                    return "float.Parse(" + value + ")";
+                case "Double":
+                    return "Double.Parse(" + value + ")";
+                case "Single":
+                    return "Single.Parse(" + value + ")";
                 case "byte":
                     return "byte.Parse(" + value + ")";
+                case "sbyte":
+                    return "sbyte.Parse(" + value + ")";
                 case "short":
                     return "short.Parse(" + value + ")";
                 case "long":
                     return "long.Parse(" + value + ")";
-                case "float":
-                    return "float.Parse(" + value + ")";
-                case "boolean":
+                case "ushort":
+                    return "ushort.Parse(" + value + ")";
+                case "ulong":
+                    return "ulong.Parse(" + value + ")";
+                case "decimal":
+                    return "decimal.Parse(" + value + ")";
                 case "Boolean":
+                    return "Boolean.Parse(" + value + ")";
+                case "bool": 
                     return "bool.Parse(" + value + ")";
                 case "char":
                     return "( " + value + ".Length > 0 ?"
                            + value + "[0] : ' ')";
                 case "Byte":
                     return "byte.Parse(" + value + ")";
+                case "SByte":
+                    return "SByte.Parse(" + value + ")";
+                case "Int16":
+                    return "Int16.Parse(" + value + ")";
+                case "Int64":
+                    return "Int64.Parse(" + value + ")";
+                case "UInt16":
+                    return "UInt16.Parse(" + value + ")";
+                case "UInt64":
+                    return "UInt64.Parse(" + value + ")";
+                case "UInt32":
+                    return "UInt32.Parse(" + value + ")";
                 case "Short":
                     return "short.Parse(" + value + ")";
-                case "Integer":
                 case "Int32":
-                    return "int.Parse(" + value + ")";
+                    return "Int32.Parse(" + value + ")";
+                case "Decimal":
+                    return "Decimal.Parse(" + value + ")";
                 case "Long":
                     return "long.Parse(" + value + ")";
                 case "Float":
                     return "float.Parse(" + value + ")";
-                case "Double":
-                    return "double.Parse(" + value + ")";
-                case "Character":
+                case "Char":
                     return "( " + value + ".Length > 0 ?"
                            + value + "[0] : ' ')";
                 default:
@@ -1166,7 +1194,7 @@ namespace GherkinExecutorForCSharp
             {
                 string s = stepNumberInScenario.ToString();
                 translate.TestPrint($"        string string{s} =");
-                translate.TestPrint("            @\"\"\"");
+                translate.TestPrint("            \"\"\"");
                 foreach (string line in table)
                 {
                     translate.TestPrint($"            {line}");
@@ -1182,14 +1210,14 @@ namespace GherkinExecutorForCSharp
                 string dataType = "List<List<string>>";
                 string dataTypeInitializer = "new List<List<string>>";
 
-                translate.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}(");
+                translate.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}{{");
                 string comma = "";
                 foreach (string line in table)
                 {
                     ConvertBarLineToList(line, comma);
                     comma = ",";
                 }
-                translate.TestPrint("            );");
+                translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
                 templateConstruct.MakeFunctionTemplateObject(dataType, fullName, className);
                 CreateConvertTableToListOfListOfObjectMethod(className);
@@ -1201,14 +1229,14 @@ namespace GherkinExecutorForCSharp
                 string dataType = "List<List<string>>";
                 string dataTypeInitializer = "new List<List<string>>";
 
-                translate.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}(");
+                translate.TestPrint($"        List<List<string>> stringListList{s} = {dataTypeInitializer}{{");
                 string comma = "";
                 foreach (string line in table)
                 {
                     ConvertBarLineToList(line, comma);
                     comma = ",";
                 }
-                translate.TestPrint("            );");
+                translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
                 templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, "List<string>");
             }
@@ -1300,7 +1328,7 @@ namespace GherkinExecutorForCSharp
             {
                 string s = stepNumberInScenario.ToString();
                 translate.TestPrint($"        string table{s} =");
-                translate.TestPrint("            @\"\"\"");
+                translate.TestPrint("            \"\"\"");
                 foreach (string line in table)
                 {
                     translate.TestPrint($"            {line}");
@@ -1314,7 +1342,7 @@ namespace GherkinExecutorForCSharp
             private void ConvertBarLineToList(string lineIn, string commaIn)
             {
                 string line = lineIn.Split('#')[0].Trim();
-                translate.TestPrint($"           {commaIn}new List<string>(");
+                translate.TestPrint($"           {commaIn}new List<string>{{");
                 List<string> elements = translate.ParseLine(line);
                 string comma = "";
                 foreach (string element in elements)
@@ -1322,7 +1350,7 @@ namespace GherkinExecutorForCSharp
                     translate.TestPrint($"            {comma}\"{element}\"");
                     comma = ",";
                 }
-                translate.TestPrint("            )");
+                translate.TestPrint("            }");
             }
 
             private void TableToListOfObject(List<string> table, string fullName, string className, bool transpose, bool compare)
@@ -1698,12 +1726,14 @@ namespace GherkinExecutorForCSharp
                 }
                 CreateConstructor(variables, className);
                 CreateEqualsMethod(variables, className);
+                CreateHashCodeMethod(variables, className); 
                 CreateBuilderMethod(variables, className);
                 CreateToStringMethod(variables, className);
                 CreateToJSONMethod(variables);
                 CreateFromJSONMethod(variables, className);
                 CreateTableToJSONMethod(className);
                 CreateJSONToTableMethod(className);
+                CreateCollectionComparator(className);
                 if (doInternal)
                 {
                     other.dataNamesInternal[internalClassName] = "";
@@ -1719,17 +1749,67 @@ namespace GherkinExecutorForCSharp
                 }
             }
 
+            private void CreateHashCodeMethod(List<DataValues> variables, string className)
+            {
+                string firstPart =
+                    """
+                        public override int GetHashCode()
+                   
+                       {
+                       int hashCode = 1; 
+                      
+                    """;
+                StringBuilder middlePart = new StringBuilder(); 
+                foreach (var variable in variables)
+                {
+                    string onePart =
+                    """
+                        hashCode ^= NAME == null ? 0 : NAME.GetHashCode();
+
+                    """;
+                    middlePart.Append(onePart.Replace("NAME", variable.Name)); 
+                }
+                string lastPart =
+                    """
+                    return hashCode;
+                    }
+                    """;
+                DataPrintLn(firstPart + middlePart.ToString() + lastPart); 
+            }
+
+        private void CreateCollectionComparator(string className)
+            {
+                string code =
+                    """
+                    public class CLASSNAMEComparer : IEqualityComparer<CLASSNAME>
+                    {
+                        public bool Equals(CLASSNAME? x, CLASSNAME? y)
+                            {
+                            if (x == null) return false; 
+                            return x.Equals(y);
+                            }
+                        public int GetHashCode(CLASSNAME obj)
+                            {
+                            return obj.GetHashCode(); 
+                            }
+                    }
+                    """;
+                code = code.Replace("CLASSNAME", className);
+                DataPrintLn(code);
+            }
+
             private void CreateJSONToTableMethod(string className)
             {
                 string code =
                     """
                     public static List<CLASSNAME> ListFromJson(string json)
                     {List <CLASSNAME> list = new List<CLASSNAME>();
-                        json = json.Replace("\\s", "");
-                        json = json.Replace("[","").Replace("]","");
-                        string[] jsonObjects = json.Split(new[] { "},\\s*{" }, StringSplitOptions.None);
-                        foreach (string jsonObject in jsonObjects)
-                        {list.Add(CLASSNAME.FromJson(jsonObject));
+                    json = Regex.Replace(json, @"\s", "");
+                    json = Regex.Replace(json, @"\[", "").Replace("]", "");
+                    string[] jsonObjects = Regex.Split(json, @"(?<=\}),\s*(?=\{)");  
+                    foreach (string jsonObject in jsonObjects)
+                        {
+                        list.Add(CLASSNAME.FromJson(jsonObject));
                         }
                         return list;
                     }
@@ -2040,11 +2120,12 @@ namespace GherkinExecutorForCSharp
                 {
                     case "Int":
                         return "int";
-                    case "Char":
+                    case "Character": 
                         return "char";
                     case "Integer":
-                        return "Int32"; 
-              
+                        return "Int32";
+                        case "boolean":
+                        return "Boolean"; 
                     default:
                         return s;
                 }
@@ -2085,8 +2166,9 @@ namespace GherkinExecutorForCSharp
                 CreateToStringObject(otherClassName, variables);
                 CreateInternalConstructor(variables, className);
                 CreateInternalEqualsMethod(variables, className);
+                CreateHashCodeMethod(variables, className);
                 CreateToStringMethod(variables, className);
-
+                CreateCollectionComparator(className);
                 DataPrintLn("    }");
                 DataPrintLn("}");        
                 EndDataFile();
@@ -2122,7 +2204,12 @@ namespace GherkinExecutorForCSharp
                     || variable.DataType == "double"
                     || variable.DataType == "long"
                     || variable.DataType == "byte"
-                    || variable.DataType == "short";
+                    || variable.DataType == "sbyte"
+                    || variable.DataType == "uint"
+                    || variable.DataType == "decimal"
+                    || variable.DataType == "ulong"
+                    || variable.DataType == "short"
+                    || variable.DataType == "ushort";
             }
 
             private void CreateDataTypeToStringObject(string className, List<DataValues> variables)
@@ -2164,6 +2251,9 @@ namespace GherkinExecutorForCSharp
                     case "byte":
                     case "short":
                     case "long":
+                    case "sbyte":
+                    case "ushort":
+                    case "ulong":
                     case "float":
                     case "bool":
                     case "char":
@@ -2436,7 +2526,8 @@ namespace GherkinExecutorForCSharp
         {
                 "using System;",
                 "using System.Collections.Generic;",
-                "using System.Text;"
+                "using System.Text;", 
+                "using System.Text.RegularExpressions;"
         };
 
             public static readonly List<string> FeatureFiles = new List<string>

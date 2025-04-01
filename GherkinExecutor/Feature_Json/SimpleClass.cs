@@ -1,39 +1,32 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Json {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-public class ATest {
+public class SimpleClass {
     public string anInt = "0";
-    public string aString = "^";
-    public string aDouble = "1.2";
-    public ATest() {}
-    public ATest(
+    public string aString = "Q";
+    public SimpleClass() {}
+    public SimpleClass(
         string anInt
         ,string aString
-        ,string aDouble
         ){
         this.anInt = anInt;
         this.aString = aString;
-        this.aDouble = aDouble;
         }
     public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
-        ATest _ATest = (ATest) o;
+        SimpleClass _SimpleClass = (SimpleClass) o;
         bool result = true;
         if (
             !this.anInt.Equals("?DNC?")
-            && !_ATest.anInt.Equals("?DNC?"))
-        if (!_ATest.anInt.Equals(this.anInt)) result = false;
+            && !_SimpleClass.anInt.Equals("?DNC?"))
+        if (!_SimpleClass.anInt.Equals(this.anInt)) result = false;
         if (
             !this.aString.Equals("?DNC?")
-            && !_ATest.aString.Equals("?DNC?"))
-        if (!_ATest.aString.Equals(this.aString)) result = false;
-        if (
-            !this.aDouble.Equals("?DNC?")
-            && !_ATest.aDouble.Equals("?DNC?"))
-        if (!_ATest.aDouble.Equals(this.aDouble)) result = false;
+            && !_SimpleClass.aString.Equals("?DNC?"))
+        if (!_SimpleClass.aString.Equals(this.aString)) result = false;
         return result;  }
     public override int GetHashCode()
 
@@ -41,13 +34,11 @@ public class ATest {
    int hashCode = 1; 
       hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
-    hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
 return hashCode;
 }
     public class Builder {
         private string anInt = "0";
-        private string aString = "^";
-        private string aDouble = "1.2";
+        private string aString = "Q";
         public Builder SetAnInt(string anInt) {
             this.anInt = anInt;
             return this;
@@ -56,32 +47,26 @@ return hashCode;
             this.aString = aString;
             return this;
             }
-        public Builder SetADouble(string aDouble) {
-            this.aDouble = aDouble;
-            return this;
-            }
         public Builder SetCompare() {
             anInt = "?DNC?";
             aString = "?DNC?";
-            aDouble = "?DNC?";
             return this;
             }
-        public ATest Build(){
-             return new ATest(
+        public SimpleClass Build(){
+             return new SimpleClass(
                  anInt
                  ,aString
-                 ,aDouble
                 );   } 
         } 
 public override string ToString()
 {
-        return "ATest {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + "\\n"; }
+        return "SimpleClass {"+" anInt = " + anInt + " "+" aString = " + aString + " "+ "} " + "\\n"; }
 public string ToJson()
 {
-    return " {"+"anInt: " + "\"" + anInt + "\""         + ","+"aString: " + "\"" + aString + "\""         + ","+"aDouble: " + "\"" + aDouble + "\""+ "} " ; }             
-    public static ATest FromJson(string json)
+    return " {"+"anInt: " + "\"" + anInt + "\""         + ","+"aString: " + "\"" + aString + "\""+ "} " ; }             
+    public static SimpleClass FromJson(string json)
     {
-            ATest instance = new ATest();
+            SimpleClass instance = new SimpleClass();
         
         json = json.Replace("\\s", "");
         string[] keyValuePairs = json.Replace("{", "").Replace("}", "").Split(',');
@@ -100,9 +85,6 @@ public string ToJson()
         case "aString":
              instance.aString = value;
              break;
-        case "aDouble":
-             instance.aDouble = value;
-             break;
         default:
             Console.Error.WriteLine("Invalid JSON element " + key);
             break; 
@@ -110,7 +92,7 @@ public string ToJson()
     }
     return instance;
 }
-public static string ListToJson(List<ATest> list)
+public static string ListToJson(List<SimpleClass> list)
 {StringBuilder jsonBuilder = new StringBuilder();
     jsonBuilder.Append("[");
     
@@ -125,34 +107,33 @@ public static string ListToJson(List<ATest> list)
     jsonBuilder.Append("]");
     return jsonBuilder.ToString();
 }
-public static List<ATest> ListFromJson(string json)
-{List <ATest> list = new List<ATest>();
+public static List<SimpleClass> ListFromJson(string json)
+{List <SimpleClass> list = new List<SimpleClass>();
 json = Regex.Replace(json, @"\s", "");
 json = Regex.Replace(json, @"\[", "").Replace("]", "");
 string[] jsonObjects = Regex.Split(json, @"(?<=\}),\s*(?=\{)");  
 foreach (string jsonObject in jsonObjects)
     {
-    list.Add(ATest.FromJson(jsonObject));
+    list.Add(SimpleClass.FromJson(jsonObject));
     }
     return list;
 }
-public class ATestComparer : IEqualityComparer<ATest>
+public class SimpleClassComparer : IEqualityComparer<SimpleClass>
 {
-    public bool Equals(ATest? x, ATest? y)
+    public bool Equals(SimpleClass? x, SimpleClass? y)
         {
         if (x == null) return false; 
         return x.Equals(y);
         }
-    public int GetHashCode(ATest obj)
+    public int GetHashCode(SimpleClass obj)
         {
         return obj.GetHashCode(); 
         }
 }
-    public ATestInternal ToATestInternal() {
-        return new ATestInternal(
+    public SimpleClassInternal ToSimpleClassInternal() {
+        return new SimpleClassInternal(
          Int32.Parse(anInt)
         , aString
-        , Double.Parse(aDouble)
         ); }
     }
 }

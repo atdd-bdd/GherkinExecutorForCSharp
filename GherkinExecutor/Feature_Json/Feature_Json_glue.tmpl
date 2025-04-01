@@ -1,0 +1,77 @@
+namespace gherkinexecutor.Feature_Json {
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
+public class Feature_Json_glue {
+    const string DNCString = "?DNC?";
+
+
+    public void Given_one_object_is(List<SimpleClass> values ) {
+        Console.WriteLine("---  " + "Given_one_object_is");
+        foreach (SimpleClass value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              SimpleClassInternal i = value.ToSimpleClassInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Then_Json_should_be(string value ) {
+        Console.WriteLine("---  " + "Then_Json_should_be");
+        Console.WriteLine(value);
+        throw new NotImplementedException();
+    }
+
+    public void Given_Json_is(string value ) {
+        Console.WriteLine("---  " + "Given_Json_is");
+        Console.WriteLine(value);
+        throw new NotImplementedException();
+    }
+
+    public void Then_the_converted_object_is(List<SimpleClass> values ) {
+        Console.WriteLine("---  " + "Then_the_converted_object_is");
+        foreach (SimpleClass value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              SimpleClassInternal i = value.ToSimpleClassInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Given_a_table_is(List<SimpleClass> values ) {
+        Console.WriteLine("---  " + "Given_a_table_is");
+        foreach (SimpleClass value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              SimpleClassInternal i = value.ToSimpleClassInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Then_Json_for_table_should_be(string value ) {
+        Console.WriteLine("---  " + "Then_Json_for_table_should_be");
+        Console.WriteLine(value);
+        throw new NotImplementedException();
+    }
+
+    public void Given_Json_for_table_is(string value ) {
+        Console.WriteLine("---  " + "Given_Json_for_table_is");
+        Console.WriteLine(value);
+        throw new NotImplementedException();
+    }
+
+    public void Then_the_converted_table_should_be(List<SimpleClass> values ) {
+        Console.WriteLine("---  " + "Then_the_converted_table_should_be");
+        foreach (SimpleClass value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              SimpleClassInternal i = value.ToSimpleClassInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    }
+}

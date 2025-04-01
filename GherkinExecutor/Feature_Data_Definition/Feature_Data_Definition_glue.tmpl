@@ -1,0 +1,41 @@
+namespace gherkinexecutor.Feature_Data_Definition {
+using System;
+using System.Collections.Generic;
+using System.Text;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
+public class Feature_Data_Definition_glue {
+    const string DNCString = "?DNC?";
+
+
+    public void Given_table_is(List<ATest> values ) {
+        Console.WriteLine("---  " + "Given_table_is");
+        foreach (ATest value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              ATestInternal i = value.ToATestInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void When_compared_to(List<ATest> values ) {
+        Console.WriteLine("---  " + "When_compared_to");
+        foreach (ATest value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              ATestInternal i = value.ToATestInternal();
+              }
+        throw new NotImplementedException();
+    }
+
+    public void Then_result_is(List<List<string>> values ) {
+        Console.WriteLine("---  " + "Then_result_is");
+        foreach (List<string> value in values){
+             Console.WriteLine(value);
+             // Add calls to production code and asserts
+              }
+        throw new NotImplementedException();
+    }
+
+    }
+}

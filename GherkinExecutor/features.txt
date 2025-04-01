@@ -1,1 +1,10 @@
-import.feature
+*import.feature
+*ata_definition.feature
+*datatype.feature
+*background.feature
+*define.feature
+*examples.feature
+*include.feature
+json.feature
+*tables_and_string.feature
+*tic_tac_toe.feature 

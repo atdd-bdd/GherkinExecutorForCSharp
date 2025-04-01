@@ -1,42 +1,36 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Json {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-public class ATestInternal {
+public class SimpleClassInternal {
     public Int32 anInt;
     public String aString;
-    public Double aDouble;
      
     public static string ToDataTypeString() {
-        return "ATestInternal {{"
+        return "SimpleClassInternal {{"
         +"Int32 " 
         +"String " 
-        +"Double " 
         + "} "; }
-    public ATest ToATest() {
-        return new ATest(
+    public SimpleClass ToSimpleClass() {
+        return new SimpleClass(
         Convert.ToString(anInt)
         ,aString.ToString()
-        ,Convert.ToString(aDouble)
         ); }
-    public ATestInternal(
+    public SimpleClassInternal(
         Int32 anInt
         ,String aString
-        ,Double aDouble
         ) {
         this.anInt = anInt;
         this.aString = aString;
-        this.aDouble = aDouble;
         }
     public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
-        ATestInternal _ATestInternal = (ATestInternal) o;
+        SimpleClassInternal _SimpleClassInternal = (SimpleClassInternal) o;
         return 
-            (_ATestInternal.anInt.Equals(this.anInt))
-             && (_ATestInternal.aString.Equals(this.aString))
-             && (_ATestInternal.aDouble.Equals(this.aDouble))
+            (_SimpleClassInternal.anInt.Equals(this.anInt))
+             && (_SimpleClassInternal.aString.Equals(this.aString))
         ;  }
     public override int GetHashCode()
 
@@ -44,20 +38,19 @@ public class ATestInternal {
    int hashCode = 1; 
       hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
-    hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
 return hashCode;
 }
 public override string ToString()
 {
-        return "ATestInternal {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + "\\n"; }
-public class ATestInternalComparer : IEqualityComparer<ATestInternal>
+        return "SimpleClassInternal {"+" anInt = " + anInt + " "+" aString = " + aString + " "+ "} " + "\\n"; }
+public class SimpleClassInternalComparer : IEqualityComparer<SimpleClassInternal>
 {
-    public bool Equals(ATestInternal? x, ATestInternal? y)
+    public bool Equals(SimpleClassInternal? x, SimpleClassInternal? y)
         {
         if (x == null) return false; 
         return x.Equals(y);
         }
-    public int GetHashCode(ATestInternal obj)
+    public int GetHashCode(SimpleClassInternal obj)
         {
         return obj.GetHashCode(); 
         }

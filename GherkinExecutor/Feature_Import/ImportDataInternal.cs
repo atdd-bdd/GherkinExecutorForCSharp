@@ -32,8 +32,28 @@ public class ImportDataInternal {
             (_ImportDataInternal.myWeekday.Equals(this.myWeekday))
              && (_ImportDataInternal.myBigInt.Equals(this.myBigInt))
         ;  }
+    public override int GetHashCode()
+
+   {
+   int hashCode = 1; 
+      hashCode ^= myWeekday == null ? 0 : myWeekday.GetHashCode();
+    hashCode ^= myBigInt == null ? 0 : myBigInt.GetHashCode();
+return hashCode;
+}
 public override string ToString()
 {
         return "ImportDataInternal {"+" myWeekday = " + myWeekday + " "+" myBigInt = " + myBigInt + " "+ "} " + "\\n"; }
+public class ImportDataInternalComparer : IEqualityComparer<ImportDataInternal>
+{
+    public bool Equals(ImportDataInternal? x, ImportDataInternal? y)
+        {
+        if (x == null) return false; 
+        return x.Equals(y);
+        }
+    public int GetHashCode(ImportDataInternal obj)
+        {
+        return obj.GetHashCode(); 
+        }
+}
     }
 }
