@@ -9,10 +9,6 @@
 	<StartupObject>GherkinExecutorForCSharp.Translate</StartupObject>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="GherkinExectuorgherkinexecutor\" />
-  </ItemGroup>
-
 	
 
 

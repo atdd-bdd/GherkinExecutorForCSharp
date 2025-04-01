@@ -28,7 +28,7 @@ public class ATestInternal {
         this.aString = aString;
         this.aDouble = aDouble;
         }
-    public override bool Equals(object o) {
+    public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
         ATestInternal _ATestInternal = (ATestInternal) o;

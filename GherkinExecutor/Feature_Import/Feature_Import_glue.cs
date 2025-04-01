@@ -16,7 +16,6 @@ public class Feature_Import_glue {
              // Add calls to production code and asserts
               ImportDataInternal i = value.ToImportDataInternal();
               }
-        throw new NotImplementedException();
     }
 
     public void Given_this_data_should_fail(List<ImportData> values ) {
@@ -26,8 +25,7 @@ public class Feature_Import_glue {
              // Add calls to production code and asserts
               ImportDataInternal i = value.ToImportDataInternal();
               }
-        throw new NotImplementedException();
-    }
+        }
 
     }
 }

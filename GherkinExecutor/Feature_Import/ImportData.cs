@@ -2,31 +2,23 @@ namespace gherkinexecutor.Feature_Import {
 using System;
 using System.Collections.Generic;
 using System.Text;
-using java.util.regex.Pattern;
-using java.math.BigInteger;
+using System.Numerics;
 public class ImportData {
-    public string myPattern = "a.*";
-    public string myWeekday = "MONDAY";
+    public string myWeekday = "Monday";
     public string myBigInt = "1";
     public ImportData() {}
     public ImportData(
-        string myPattern
-        ,string myWeekday
+        string myWeekday
         ,string myBigInt
         ){
-        this.myPattern = myPattern;
         this.myWeekday = myWeekday;
         this.myBigInt = myBigInt;
         }
-    public override bool Equals(object o) {
+    public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
         ImportData _ImportData = (ImportData) o;
         bool result = true;
-        if (
-            !this.myPattern.Equals("?DNC?")
-            && !_ImportData.myPattern.Equals("?DNC?"))
-        if (!_ImportData.myPattern.Equals(this.myPattern)) result = false;
         if (
             !this.myWeekday.Equals("?DNC?")
             && !_ImportData.myWeekday.Equals("?DNC?"))
@@ -37,13 +29,8 @@ public class ImportData {
         if (!_ImportData.myBigInt.Equals(this.myBigInt)) result = false;
         return result;  }
     public class Builder {
-        private string myPattern = "a.*";
-        private string myWeekday = "MONDAY";
+        private string myWeekday = "Monday";
         private string myBigInt = "1";
-        public Builder SetMyPattern(string myPattern) {
-            this.myPattern = myPattern;
-            return this;
-            }
         public Builder SetMyWeekday(string myWeekday) {
             this.myWeekday = myWeekday;
             return this;
@@ -53,24 +40,22 @@ public class ImportData {
             return this;
             }
         public Builder SetCompare() {
-            myPattern = "?DNC?";
             myWeekday = "?DNC?";
             myBigInt = "?DNC?";
             return this;
             }
         public ImportData Build(){
              return new ImportData(
-                 myPattern
-                 ,myWeekday
+                 myWeekday
                  ,myBigInt
                 );   } 
         } 
 public override string ToString()
 {
-        return "ImportData {"+" myPattern = " + myPattern + " "+" myWeekday = " + myWeekday + " "+" myBigInt = " + myBigInt + " "+ "} " + "\\n"; }
+        return "ImportData {"+" myWeekday = " + myWeekday + " "+" myBigInt = " + myBigInt + " "+ "} " + "\\n"; }
 public string ToJson()
 {
-    return " {"+"myPattern: " + "\"" + myPattern + "\""         + ","+"myWeekday: " + "\"" + myWeekday + "\""         + ","+"myBigInt: " + "\"" + myBigInt + "\""+ "} " ; }             
+    return " {"+"myWeekday: " + "\"" + myWeekday + "\""         + ","+"myBigInt: " + "\"" + myBigInt + "\""+ "} " ; }             
     public static ImportData FromJson(string json)
     {
             ImportData instance = new ImportData();
@@ -86,13 +71,13 @@ public string ToJson()
             switch (key)
             {
 
-case "myPattern":
-    instance.myPattern = value;
-    break;case "myWeekday":
-    instance.myWeekday = value;
-    break;case "myBigInt":
-    instance.myBigInt = value;
-    break;        default:
+        case "myWeekday":
+             instance.myWeekday = value;
+             break;
+        case "myBigInt":
+             instance.myBigInt = value;
+             break;
+        default:
             Console.Error.WriteLine("Invalid JSON element " + key);
             break; 
         }
@@ -126,9 +111,8 @@ public static List<ImportData> ListFromJson(string json)
 }
     public ImportDataInternal ToImportDataInternal() {
         return new ImportDataInternal(
-         Pattern.compile(myPattern)
-        , Weekday.valueOf(myWeekday)
-        , new BigInteger(myBigInt)
+         (DayOfWeek)Enum.Parse(typeof(DayOfWeek), myWeekday)
+        , BigInteger.Parse(myBigInt)
         ); }
     }
 }

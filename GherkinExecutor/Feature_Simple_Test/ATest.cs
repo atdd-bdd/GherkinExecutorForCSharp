@@ -16,7 +16,7 @@ public class ATest {
         this.aString = aString;
         this.aDouble = aDouble;
         }
-    public override bool Equals(object o) {
+    public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
         ATest _ATest = (ATest) o;
@@ -84,13 +84,16 @@ public string ToJson()
             switch (key)
             {
 
-case "anInt":
-    instance.anInt = value;
-    break;case "aString":
-    instance.aString = value;
-    break;case "aDouble":
-    instance.aDouble = value;
-    break;        default:
+        case "anInt":
+             instance.anInt = value;
+             break;
+        case "aString":
+             instance.aString = value;
+             break;
+        case "aDouble":
+             instance.aDouble = value;
+             break;
+        default:
             Console.Error.WriteLine("Invalid JSON element " + key);
             break; 
         }

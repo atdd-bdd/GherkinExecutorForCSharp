@@ -2,43 +2,38 @@ namespace gherkinexecutor.Feature_Import {
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Numerics;
 public class ImportDataInternal {
-    public Pattern myPattern;
-    public Weekday myWeekday;
+    public DayOfWeek myWeekday;
     public BigInteger myBigInt;
      
     public static string ToDataTypeString() {
         return "ImportDataInternal {{"
-        +"Pattern " 
-        +"Weekday " 
+        +"DayOfWeek " 
         +"BigInteger " 
         + "} "; }
     public ImportData ToImportData() {
         return new ImportData(
-        myPattern.ToString()
-        ,myWeekday.ToString()
+        myWeekday.ToString()
         ,myBigInt.ToString()
         ); }
     public ImportDataInternal(
-        Pattern myPattern
-        ,Weekday myWeekday
+        DayOfWeek myWeekday
         ,BigInteger myBigInt
         ) {
-        this.myPattern = myPattern;
         this.myWeekday = myWeekday;
         this.myBigInt = myBigInt;
         }
-    public override bool Equals(object o) {
+    public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
         ImportDataInternal _ImportDataInternal = (ImportDataInternal) o;
         return 
-            (_ImportDataInternal.myPattern.Equals(this.myPattern))
-             && (_ImportDataInternal.myWeekday.Equals(this.myWeekday))
+            (_ImportDataInternal.myWeekday.Equals(this.myWeekday))
              && (_ImportDataInternal.myBigInt.Equals(this.myBigInt))
         ;  }
 public override string ToString()
 {
-        return "ImportDataInternal {"+" myPattern = " + myPattern + " "+" myWeekday = " + myWeekday + " "+" myBigInt = " + myBigInt + " "+ "} " + "\\n"; }
+        return "ImportDataInternal {"+" myWeekday = " + myWeekday + " "+" myBigInt = " + myBigInt + " "+ "} " + "\\n"; }
     }
 }

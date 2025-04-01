@@ -73,8 +73,7 @@ namespace GherkinExecutorForCSharp
         public void TranslateInTests(string name)
         {
             FindFeatureDirectory(name);
-            Console.WriteLine("FD is " + name );
-
+        
             linesToAddForDataAndGlue.AddRange(Configuration.LinesToAddForDataAndGlue);
             dataIn = new InputIterator(name, featureDirectory);
             AlterFeatureDirectory();
@@ -297,11 +296,21 @@ namespace GherkinExecutorForCSharp
             //TestPrint("import java.util.List;");
             if (Configuration.LogIt)
             {
-                //TestPrint("import java.io.FileWriter;");
-                //TestPrint("import java.io.IOException;");
+                TestPrint("using System.IO;");
             }
- 
-            TestPrint("class " + fullName + "{");
+            switch (Configuration.TestFramework)
+            {
+                case "MSTest":
+                    TestPrint("[TestClass");
+                    break;
+                case "NUnit":
+                    TestPrint("    ");
+                    break;
+                default:
+                    TestPrint("[TestClass]");
+                    break;
+            }
+            TestPrint("public class " + fullName + "{");
             TestPrint(LogIt());
             TestPrint("");
 
@@ -1097,12 +1106,12 @@ namespace GherkinExecutorForCSharp
             {
                 this.translate = translate;
                 templateConstruct = translate.templateConstruct;
-                glueObject = translate.glueObject;
                 stepNumberInScenario = translate.stepNumberInScenario; 
             }
 
         public void ActOnStep(string fullName, List<string> comment)
             {
+                glueObject = translate.glueObject;
                 stepNumberInScenario += 1;
                 Pair<String, List<String>> follow = translate.LookForFollow();
                 string followType = follow.getFirst();
@@ -1321,9 +1330,9 @@ namespace GherkinExecutorForCSharp
                 translate.Trace("TableToListOfObject classNames " + className);
                 string s = stepNumberInScenario.ToString();
                 string dataType = $"List<{className}>";
-                string dataTypeInitializer = "new List<" + className + ">(";
+                string dataTypeInitializer = "new List<" + className + ">{";
 
-                translate.TestPrint($"        List<{className}> objectList{s} = {dataTypeInitializer}");
+                translate.TestPrint($"         List<{className}> objectList{s} = {dataTypeInitializer}");
                 bool inHeaderLine = true;
                 List<List<string>> dataList = ConvertToListList(table, transpose);
                 List<string> headers = new List<string>();
@@ -1348,7 +1357,7 @@ namespace GherkinExecutorForCSharp
                     ConvertBarLineToParameter(headers, row, className, comma, compare);
                     comma = ",";
                 }
-                translate.TestPrint("            );");
+                translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(objectList{s});");
 
                 templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, className);
@@ -1438,7 +1447,6 @@ namespace GherkinExecutorForCSharp
             {
                 try
                 {
-                    Console.Write("Writing to glue file " + line + '\n');
                     glueTemplateFile.WriteLine(line);
                 }
                 catch (IOException e)
@@ -1561,7 +1569,7 @@ namespace GherkinExecutorForCSharp
                         TemplatePrint("using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;");
                         break;
                 }
-                TemplatePrint("using System.Collections.Generic;");
+                //TemplatePrint("using System.Collections.Generic;");
                 if (Configuration.LogIt)
                 {
                     TemplatePrint("using System.IO;");
@@ -1597,7 +1605,6 @@ namespace GherkinExecutorForCSharp
             {
                 try
                 {
-                    Console.Write("Opening glue file " + templateFilename);
                     glueTemplateFile = new StreamWriter(templateFilename, false);
                 }
                 catch(Exception e)
@@ -1879,9 +1886,10 @@ namespace GherkinExecutorForCSharp
                 {
                     string start =
                         """
-                        case "NAME":
-                            instance.NAME = value;
-                            break;
+                                case "NAME":
+                                     instance.NAME = value;
+                                     break;
+
                         """;
                     middlePart.Append(start).Replace("NAME", variable.Name);
                 }
@@ -1964,7 +1972,7 @@ namespace GherkinExecutorForCSharp
 
             private void CreateEqualsMethod(List<DataValues> variables, string className)
             {
-                DataPrintLn("    public override bool Equals(object o) {");
+                DataPrintLn("    public override bool Equals(object? o) {");
                 DataPrintLn("        if (this == o) return true;");
                 DataPrintLn("        if (o == null || GetType() != o.GetType()) return false;");
 
@@ -2063,7 +2071,7 @@ namespace GherkinExecutorForCSharp
                 other.dataNames[classNameInternal] = "";
                 StartDataFile(className, providedClassName);
                 DataPrintLn($"namespace {other.packagePath} {{");
-                foreach (string line in Configuration.LinesToAddForDataAndGlue)
+                foreach (string line in other.linesToAddForDataAndGlue)
                 {
                     DataPrintLn(line);
                 }
@@ -2086,7 +2094,7 @@ namespace GherkinExecutorForCSharp
 
             private void CreateInternalEqualsMethod(List<DataValues> variables, string className)
             {
-                DataPrintLn("    public override bool Equals(object o) {");
+                DataPrintLn("    public override bool Equals(object? o) {");
                 DataPrintLn("        if (this == o) return true;");
                 DataPrintLn("        if (o == null || GetType() != o.GetType()) return false;");
 
@@ -2249,6 +2257,7 @@ namespace GherkinExecutorForCSharp
                     {
                         string value = "using " + im.ImportName + ";";
                         other.linesToAddForDataAndGlue.Add(value);
+                        Console.Write("*** adding using line " + value); 
                     }
                 }
             }
