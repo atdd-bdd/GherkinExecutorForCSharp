@@ -296,7 +296,7 @@ namespace GherkinExecutorForCSharp
                     TestPrint("[TestClass");
                     break;
                 case "NUnit":
-                    TestPrint("    ");
+                    TestPrint("[TestFixture]");
                     break;
                 default:
                     TestPrint("[TestClass]");
@@ -1490,8 +1490,10 @@ namespace GherkinExecutorForCSharp
         {
             public StreamWriter glueTemplateFile;
             private Translate translate;
-            public TemplateConstruct(Translate other)
+            public TemplateConstruct(Translate? other)
             {
+                if (other == null)
+                    Environment.Exit(-100);
                 this.translate = other;
             }
 
@@ -1615,11 +1617,11 @@ namespace GherkinExecutorForCSharp
                 }
                 switch (Configuration.TestFramework)
                 {
-                    case "JUnit4":
+                    case "NUnit":
                         TemplatePrint("using static NUnit.Framework.Assert;");
                         break;
-                    case "TestNG":
-                        TemplatePrint("using static TestNG.Assert;");
+                    case "MSTest":
+                        TemplatePrint("using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;");
                         break;
                     default:
                         TemplatePrint("using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;");
@@ -1676,8 +1678,10 @@ namespace GherkinExecutorForCSharp
             private StreamWriter dataDefinitionFile;
             private const string throwString = "";
             private Translate translate;
-            public DataConstruct(Translate other)
+            public DataConstruct(Translate? other)
             {
+                if (other == null)
+                    Environment.Exit(-100); 
                 this.translate = other;
             }
 
@@ -2316,8 +2320,10 @@ namespace GherkinExecutorForCSharp
         class ImportConstruct
         {
             private Translate translate;
-            public ImportConstruct(Translate other)
+            public ImportConstruct(Translate? other)
             {
+                if (other == null)
+                    Environment.Exit(-100);
                 this.translate = other;
             }
             public class ImportData
@@ -2419,8 +2425,10 @@ namespace GherkinExecutorForCSharp
         class DefineConstruct
         {
             private Translate translate;
-            public DefineConstruct(Translate other)
+            public DefineConstruct(Translate? other)
             {
+                if (other == null)
+                    Environment.Exit(-100);
                 this.translate = other;
             }
             public class DefineData
@@ -2544,8 +2552,8 @@ namespace GherkinExecutorForCSharp
             public static readonly string DataDefinitionFileExtension = "cs";   // "tmpl";
                                                                                 // change to tmpl if you are altering the data classes to avoid overwriting them
 
-            public static readonly string TestFramework = "JUnit5";
-            // Could be "JUnit4" or "TestNG"
+            public static readonly string TestFramework = "MSTest";
+            // Could be "NUnit" 
 
             public static string AddToPackageName { get; set; } = "";
             // change to "test.java." for Eclipse
@@ -2560,7 +2568,7 @@ namespace GherkinExecutorForCSharp
 
             public static readonly List<string> FeatureFiles = new List<string>
             {
-                 "simple_test.feature", // Something to try out after setup
+                 // "starting.feature", // Something to try out after setup
                 // "full_test.feature.sav" // used for testing Translate
             };
         }

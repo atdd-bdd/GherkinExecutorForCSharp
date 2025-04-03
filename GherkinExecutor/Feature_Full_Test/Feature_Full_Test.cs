@@ -1,6 +1,6 @@
 namespace gherkinexecutor.Feature_Full_Test{
 using System.IO;
-[TestClass]
+[TestClass
 public class Feature_Full_Test{
        void Log(string value)
             {
