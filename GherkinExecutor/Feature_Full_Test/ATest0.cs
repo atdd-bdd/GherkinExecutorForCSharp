@@ -1,14 +1,15 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Full_Test {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-public class ATest {
+using System.Numerics;
+public class ATest0 {
     public string anInt = "0";
     public string aString = "^";
     public string aDouble = "1.2";
-    public ATest() {}
-    public ATest(
+    public ATest0() {}
+    public ATest0(
         string anInt
         ,string aString
         ,string aDouble
@@ -20,20 +21,20 @@ public class ATest {
     public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
-        ATest _ATest = (ATest) o;
+        ATest0 _ATest0 = (ATest0) o;
         bool result = true;
         if (
             !this.anInt.Equals("?DNC?")
-            && !_ATest.anInt.Equals("?DNC?"))
-        if (!_ATest.anInt.Equals(this.anInt)) result = false;
+            && !_ATest0.anInt.Equals("?DNC?"))
+        if (!_ATest0.anInt.Equals(this.anInt)) result = false;
         if (
             !this.aString.Equals("?DNC?")
-            && !_ATest.aString.Equals("?DNC?"))
-        if (!_ATest.aString.Equals(this.aString)) result = false;
+            && !_ATest0.aString.Equals("?DNC?"))
+        if (!_ATest0.aString.Equals(this.aString)) result = false;
         if (
             !this.aDouble.Equals("?DNC?")
-            && !_ATest.aDouble.Equals("?DNC?"))
-        if (!_ATest.aDouble.Equals(this.aDouble)) result = false;
+            && !_ATest0.aDouble.Equals("?DNC?"))
+        if (!_ATest0.aDouble.Equals(this.aDouble)) result = false;
         return result;  }
     public override int GetHashCode()
 
@@ -66,8 +67,8 @@ return hashCode;
             aDouble = "?DNC?";
             return this;
             }
-        public ATest Build(){
-             return new ATest(
+        public ATest0 Build(){
+             return new ATest0(
                  anInt
                  ,aString
                  ,aDouble
@@ -75,13 +76,13 @@ return hashCode;
         } 
 public override string ToString()
 {
-        return "ATest {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
+        return "ATest0 {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
 public string ToJson()
 {
     return " {"+"anInt: " + "\"" + anInt + "\""         + ","+"aString: " + "\"" + aString + "\""         + ","+"aDouble: " + "\"" + aDouble + "\""+ "} " ; }             
-    public static ATest FromJson(string json)
+    public static ATest0 FromJson(string json)
     {
-            ATest instance = new ATest();
+            ATest0 instance = new ATest0();
         
         json = json.Replace("\\s", "");
         string[] keyValuePairs = json.Replace("{", "").Replace("}", "").Split(',');
@@ -110,7 +111,7 @@ public string ToJson()
     }
     return instance;
 }
-public static string ListToJson(List<ATest> list)
+public static string ListToJson(List<ATest0> list)
 {StringBuilder jsonBuilder = new StringBuilder();
     jsonBuilder.Append("[");
     
@@ -125,25 +126,25 @@ public static string ListToJson(List<ATest> list)
     jsonBuilder.Append("]");
     return jsonBuilder.ToString();
 }
-public static List<ATest> ListFromJson(string json)
-{List <ATest> list = new List<ATest>();
+public static List<ATest0> ListFromJson(string json)
+{List <ATest0> list = new List<ATest0>();
 json = Regex.Replace(json, @"\s", "");
 json = Regex.Replace(json, @"\[", "").Replace("]", "");
 string[] jsonObjects = Regex.Split(json, @"(?<=\}),\s*(?=\{)");  
 foreach (string jsonObject in jsonObjects)
     {
-    list.Add(ATest.FromJson(jsonObject));
+    list.Add(ATest0.FromJson(jsonObject));
     }
     return list;
 }
-public class ATestComparer : IEqualityComparer<ATest>
+public class ATest0Comparer : IEqualityComparer<ATest0>
 {
-    public bool Equals(ATest? x, ATest? y)
+    public bool Equals(ATest0? x, ATest0? y)
         {
         if (x == null) return false; 
         return x.Equals(y);
         }
-    public int GetHashCode(ATest obj)
+    public int GetHashCode(ATest0 obj)
         {
         return obj.GetHashCode(); 
         }

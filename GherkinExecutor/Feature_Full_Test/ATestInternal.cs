@@ -1,8 +1,9 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Full_Test {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Numerics;
 public class ATestInternal {
     public Int32 anInt;
     public String aString;
@@ -14,8 +15,8 @@ public class ATestInternal {
         +"String " 
         +"Double " 
         + "} "; }
-    public ATest ToATest() {
-        return new ATest(
+    public ATest0 ToATest0() {
+        return new ATest0(
         Convert.ToString(anInt)
         ,aString.ToString()
         ,Convert.ToString(aDouble)

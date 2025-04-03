@@ -28,45 +28,50 @@ public class Feature_Tic_Tac_Toe_Game_glue {
 
                 game.MakeAMove(i.row, i.column, i.mark);
             }
-        throw new NotImplementedException();
     }
 
     public void Then_board_is_now(string value ) {
         Console.WriteLine("---  " + "Then_board_is_now");
         Console.WriteLine(value);
-            value = value.Substring(0, value.length() - 1);
-            String result = game.ToString();
-            AreEqual(value, result);
+            //value = value.Substring(0, value.Length - 1);
+            string result = game.ToString();
+            Console.WriteLine("***");
+            Console.WriteLine(result);
+            Console.WriteLine("***");
+            Console.WriteLine(value);
+            Console.WriteLine("***");
+            Console.WriteLine(result.Length);
+            Console.WriteLine(value.Length);
+            result = result.Replace("\r", "\n");
+            value = value.Replace("\r", "\n");
+            result = result.Replace("\n\n", "\n");
+            value = value.Replace("\n\n", "\n");
 
+            CollectionAssert.AreEqual(value.ToCharArray(), result.ToCharArray(), "Strings are not equal!");
+            AreEqual(value, result);
         }
 
-        public void When_one_move_is(List<List<string>> values ) {
-        Console.WriteLine("---  " + "When_one_move_is");
-            String s = value.get(0).get(0);
+        public void When_one_move_is(List<List<string>> values)
+        {
+            Console.WriteLine("---  " + "When_one_move_is");
+            string s = values[0][0];
             MoveIn mi = new MoveIn(s);
-            Move m = mi.toMove();
-           
-                MoveInternal oneMove = m.ToMoveInternal();
-                game.MakeAMove(oneMove.row, oneMove.column,
-                        oneMove.mark);
-         string s = values[0][0]]
-        MoveIn mi = new MoveIn(s);
-        Move m = mi.toMove();
-        try {
-            MoveInternal oneMove = m.toMoveInternal();
-            game.makeAMove(oneMove.row, oneMove.column,
-                    oneMove.mark);
-    
-            }
+            Move m = mi.ToMove();
 
+            MoveInternal oneMove = m.ToMoveInternal();
+            game.MakeAMove(oneMove.row, oneMove.column,
+                    oneMove.mark);
+        }
+      
     public void When_moves_are(List<Move> values ) {
         Console.WriteLine("---  " + "When_moves_are");
         foreach (Move value in values){
              Console.WriteLine(value);
              // Add calls to production code and asserts
               MoveInternal i = value.ToMoveInternal();
-              }
-        throw new NotImplementedException();
+                game.MakeAMove(i.row, i.column, i.mark);
+            }
+
     }
 
     }

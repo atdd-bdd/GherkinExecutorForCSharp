@@ -1,7 +1,8 @@
 Feature: Full Test
 
-Include "background.feature"
+
 Include "data_definition.feature" 
+Include "datatype.feature"
 Include "data_definition_error.feature"
 Include "define.feature"
 Include "examples.feature" 

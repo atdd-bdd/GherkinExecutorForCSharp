@@ -1,87 +1,103 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Full_Test {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-public class ATest {
+using System.Numerics;
+public class SomeTypes {
     public string anInt = "0";
-    public string aString = "^";
-    public string aDouble = "1.2";
-    public ATest() {}
-    public ATest(
+    public string aDouble = "0.0";
+    public string aChar = "x";
+    public string achar = "y";
+    public SomeTypes() {}
+    public SomeTypes(
         string anInt
-        ,string aString
         ,string aDouble
+        ,string aChar
+        ,string achar
         ){
         this.anInt = anInt;
-        this.aString = aString;
         this.aDouble = aDouble;
+        this.aChar = aChar;
+        this.achar = achar;
         }
     public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
-        ATest _ATest = (ATest) o;
+        SomeTypes _SomeTypes = (SomeTypes) o;
         bool result = true;
         if (
             !this.anInt.Equals("?DNC?")
-            && !_ATest.anInt.Equals("?DNC?"))
-        if (!_ATest.anInt.Equals(this.anInt)) result = false;
-        if (
-            !this.aString.Equals("?DNC?")
-            && !_ATest.aString.Equals("?DNC?"))
-        if (!_ATest.aString.Equals(this.aString)) result = false;
+            && !_SomeTypes.anInt.Equals("?DNC?"))
+        if (!_SomeTypes.anInt.Equals(this.anInt)) result = false;
         if (
             !this.aDouble.Equals("?DNC?")
-            && !_ATest.aDouble.Equals("?DNC?"))
-        if (!_ATest.aDouble.Equals(this.aDouble)) result = false;
+            && !_SomeTypes.aDouble.Equals("?DNC?"))
+        if (!_SomeTypes.aDouble.Equals(this.aDouble)) result = false;
+        if (
+            !this.aChar.Equals("?DNC?")
+            && !_SomeTypes.aChar.Equals("?DNC?"))
+        if (!_SomeTypes.aChar.Equals(this.aChar)) result = false;
+        if (
+            !this.achar.Equals("?DNC?")
+            && !_SomeTypes.achar.Equals("?DNC?"))
+        if (!_SomeTypes.achar.Equals(this.achar)) result = false;
         return result;  }
     public override int GetHashCode()
 
    {
    int hashCode = 1; 
       hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
-    hashCode ^= aString == null ? 0 : aString.GetHashCode();
     hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
+    hashCode ^= aChar == null ? 0 : aChar.GetHashCode();
+    hashCode ^= achar == null ? 0 : achar.GetHashCode();
 return hashCode;
 }
     public class Builder {
         private string anInt = "0";
-        private string aString = "^";
-        private string aDouble = "1.2";
+        private string aDouble = "0.0";
+        private string aChar = "x";
+        private string achar = "y";
         public Builder SetAnInt(string anInt) {
             this.anInt = anInt;
-            return this;
-            }
-        public Builder SetAString(string aString) {
-            this.aString = aString;
             return this;
             }
         public Builder SetADouble(string aDouble) {
             this.aDouble = aDouble;
             return this;
             }
-        public Builder SetCompare() {
-            anInt = "?DNC?";
-            aString = "?DNC?";
-            aDouble = "?DNC?";
+        public Builder SetAChar(string aChar) {
+            this.aChar = aChar;
             return this;
             }
-        public ATest Build(){
-             return new ATest(
+        public Builder SetAchar(string achar) {
+            this.achar = achar;
+            return this;
+            }
+        public Builder SetCompare() {
+            anInt = "?DNC?";
+            aDouble = "?DNC?";
+            aChar = "?DNC?";
+            achar = "?DNC?";
+            return this;
+            }
+        public SomeTypes Build(){
+             return new SomeTypes(
                  anInt
-                 ,aString
                  ,aDouble
+                 ,aChar
+                 ,achar
                 );   } 
         } 
 public override string ToString()
 {
-        return "ATest {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
+        return "SomeTypes {"+" anInt = " + anInt + " "+" aDouble = " + aDouble + " "+" aChar = " + aChar + " "+" achar = " + achar + " "+ "} " + Environment.NewLine; }
 public string ToJson()
 {
-    return " {"+"anInt: " + "\"" + anInt + "\""         + ","+"aString: " + "\"" + aString + "\""         + ","+"aDouble: " + "\"" + aDouble + "\""+ "} " ; }             
-    public static ATest FromJson(string json)
+    return " {"+"anInt: " + "\"" + anInt + "\""         + ","+"aDouble: " + "\"" + aDouble + "\""         + ","+"aChar: " + "\"" + aChar + "\""         + ","+"achar: " + "\"" + achar + "\""+ "} " ; }             
+    public static SomeTypes FromJson(string json)
     {
-            ATest instance = new ATest();
+            SomeTypes instance = new SomeTypes();
         
         json = json.Replace("\\s", "");
         string[] keyValuePairs = json.Replace("{", "").Replace("}", "").Split(',');
@@ -97,11 +113,14 @@ public string ToJson()
         case "anInt":
              instance.anInt = value;
              break;
-        case "aString":
-             instance.aString = value;
-             break;
         case "aDouble":
              instance.aDouble = value;
+             break;
+        case "aChar":
+             instance.aChar = value;
+             break;
+        case "achar":
+             instance.achar = value;
              break;
         default:
             Console.Error.WriteLine("Invalid JSON element " + key);
@@ -110,7 +129,7 @@ public string ToJson()
     }
     return instance;
 }
-public static string ListToJson(List<ATest> list)
+public static string ListToJson(List<SomeTypes> list)
 {StringBuilder jsonBuilder = new StringBuilder();
     jsonBuilder.Append("[");
     
@@ -125,34 +144,35 @@ public static string ListToJson(List<ATest> list)
     jsonBuilder.Append("]");
     return jsonBuilder.ToString();
 }
-public static List<ATest> ListFromJson(string json)
-{List <ATest> list = new List<ATest>();
+public static List<SomeTypes> ListFromJson(string json)
+{List <SomeTypes> list = new List<SomeTypes>();
 json = Regex.Replace(json, @"\s", "");
 json = Regex.Replace(json, @"\[", "").Replace("]", "");
 string[] jsonObjects = Regex.Split(json, @"(?<=\}),\s*(?=\{)");  
 foreach (string jsonObject in jsonObjects)
     {
-    list.Add(ATest.FromJson(jsonObject));
+    list.Add(SomeTypes.FromJson(jsonObject));
     }
     return list;
 }
-public class ATestComparer : IEqualityComparer<ATest>
+public class SomeTypesComparer : IEqualityComparer<SomeTypes>
 {
-    public bool Equals(ATest? x, ATest? y)
+    public bool Equals(SomeTypes? x, SomeTypes? y)
         {
         if (x == null) return false; 
         return x.Equals(y);
         }
-    public int GetHashCode(ATest obj)
+    public int GetHashCode(SomeTypes obj)
         {
         return obj.GetHashCode(); 
         }
 }
-    public ATestInternal ToATestInternal() {
-        return new ATestInternal(
-         Int32.Parse(anInt)
-        , aString
+    public SomeTypesInternal ToSomeTypesInternal() {
+        return new SomeTypesInternal(
+         int.Parse(anInt)
         , Double.Parse(aDouble)
+        , ( aChar.Length > 0 ?aChar[0] : ' ')
+        , ( achar.Length > 0 ?achar[0] : ' ')
         ); }
     }
 }

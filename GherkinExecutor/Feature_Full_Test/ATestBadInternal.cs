@@ -1,27 +1,28 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Full_Test {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-public class ATestInternal {
-    public Int32 anInt;
+using System.Numerics;
+public class ATestBadInternal {
+    public int anInt;
     public String aString;
     public Double aDouble;
      
     public static string ToDataTypeString() {
-        return "ATestInternal {{"
-        +"Int32 " 
+        return "ATestBadInternal {{"
+        +"int " 
         +"String " 
         +"Double " 
         + "} "; }
-    public ATest ToATest() {
-        return new ATest(
+    public ATestBad ToATestBad() {
+        return new ATestBad(
         Convert.ToString(anInt)
         ,aString.ToString()
         ,Convert.ToString(aDouble)
         ); }
-    public ATestInternal(
-        Int32 anInt
+    public ATestBadInternal(
+        int anInt
         ,String aString
         ,Double aDouble
         ) {
@@ -32,11 +33,11 @@ public class ATestInternal {
     public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
-        ATestInternal _ATestInternal = (ATestInternal) o;
+        ATestBadInternal _ATestBadInternal = (ATestBadInternal) o;
         return 
-            (_ATestInternal.anInt.Equals(this.anInt))
-             && (_ATestInternal.aString.Equals(this.aString))
-             && (_ATestInternal.aDouble.Equals(this.aDouble))
+            (_ATestBadInternal.anInt == (this.anInt))
+             && (_ATestBadInternal.aString.Equals(this.aString))
+             && (_ATestBadInternal.aDouble.Equals(this.aDouble))
         ;  }
     public override int GetHashCode()
 
@@ -49,15 +50,15 @@ return hashCode;
 }
 public override string ToString()
 {
-        return "ATestInternal {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
-public class ATestInternalComparer : IEqualityComparer<ATestInternal>
+        return "ATestBadInternal {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
+public class ATestBadInternalComparer : IEqualityComparer<ATestBadInternal>
 {
-    public bool Equals(ATestInternal? x, ATestInternal? y)
+    public bool Equals(ATestBadInternal? x, ATestBadInternal? y)
         {
         if (x == null) return false; 
         return x.Equals(y);
         }
-    public int GetHashCode(ATestInternal obj)
+    public int GetHashCode(ATestBadInternal obj)
         {
         return obj.GetHashCode(); 
         }

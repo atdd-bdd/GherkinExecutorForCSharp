@@ -1,12 +1,13 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Full_Test {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Numerics;
 public class ATest {
     public string anInt = "0";
-    public string aString = "^";
-    public string aDouble = "1.2";
+    public string aString = " ";
+    public string aDouble = "4.0";
     public ATest() {}
     public ATest(
         string anInt
@@ -46,8 +47,8 @@ return hashCode;
 }
     public class Builder {
         private string anInt = "0";
-        private string aString = "^";
-        private string aDouble = "1.2";
+        private string aString = " ";
+        private string aDouble = "4.0";
         public Builder SetAnInt(string anInt) {
             this.anInt = anInt;
             return this;
@@ -150,7 +151,7 @@ public class ATestComparer : IEqualityComparer<ATest>
 }
     public ATestInternal ToATestInternal() {
         return new ATestInternal(
-         Int32.Parse(anInt)
+         int.Parse(anInt)
         , aString
         , Double.Parse(aDouble)
         ); }

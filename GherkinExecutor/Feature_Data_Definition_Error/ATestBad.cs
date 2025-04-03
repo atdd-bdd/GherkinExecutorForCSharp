@@ -1,14 +1,14 @@
-namespace gherkinexecutor.Feature_Simple_Test {
+namespace gherkinexecutor.Feature_Data_Definition_Error {
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-public class ATest {
-    public string anInt = "0";
-    public string aString = "^";
-    public string aDouble = "1.2";
-    public ATest() {}
-    public ATest(
+public class ATestBad {
+    public string anInt = "a";
+    public string aString = " ";
+    public string aDouble = "b";
+    public ATestBad() {}
+    public ATestBad(
         string anInt
         ,string aString
         ,string aDouble
@@ -20,20 +20,20 @@ public class ATest {
     public override bool Equals(object? o) {
         if (this == o) return true;
         if (o == null || GetType() != o.GetType()) return false;
-        ATest _ATest = (ATest) o;
+        ATestBad _ATestBad = (ATestBad) o;
         bool result = true;
         if (
             !this.anInt.Equals("?DNC?")
-            && !_ATest.anInt.Equals("?DNC?"))
-        if (!_ATest.anInt.Equals(this.anInt)) result = false;
+            && !_ATestBad.anInt.Equals("?DNC?"))
+        if (!_ATestBad.anInt.Equals(this.anInt)) result = false;
         if (
             !this.aString.Equals("?DNC?")
-            && !_ATest.aString.Equals("?DNC?"))
-        if (!_ATest.aString.Equals(this.aString)) result = false;
+            && !_ATestBad.aString.Equals("?DNC?"))
+        if (!_ATestBad.aString.Equals(this.aString)) result = false;
         if (
             !this.aDouble.Equals("?DNC?")
-            && !_ATest.aDouble.Equals("?DNC?"))
-        if (!_ATest.aDouble.Equals(this.aDouble)) result = false;
+            && !_ATestBad.aDouble.Equals("?DNC?"))
+        if (!_ATestBad.aDouble.Equals(this.aDouble)) result = false;
         return result;  }
     public override int GetHashCode()
 
@@ -45,9 +45,9 @@ public class ATest {
 return hashCode;
 }
     public class Builder {
-        private string anInt = "0";
-        private string aString = "^";
-        private string aDouble = "1.2";
+        private string anInt = "a";
+        private string aString = " ";
+        private string aDouble = "b";
         public Builder SetAnInt(string anInt) {
             this.anInt = anInt;
             return this;
@@ -66,8 +66,8 @@ return hashCode;
             aDouble = "?DNC?";
             return this;
             }
-        public ATest Build(){
-             return new ATest(
+        public ATestBad Build(){
+             return new ATestBad(
                  anInt
                  ,aString
                  ,aDouble
@@ -75,13 +75,13 @@ return hashCode;
         } 
 public override string ToString()
 {
-        return "ATest {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
+        return "ATestBad {"+" anInt = " + anInt + " "+" aString = " + aString + " "+" aDouble = " + aDouble + " "+ "} " + Environment.NewLine; }
 public string ToJson()
 {
     return " {"+"anInt: " + "\"" + anInt + "\""         + ","+"aString: " + "\"" + aString + "\""         + ","+"aDouble: " + "\"" + aDouble + "\""+ "} " ; }             
-    public static ATest FromJson(string json)
+    public static ATestBad FromJson(string json)
     {
-            ATest instance = new ATest();
+            ATestBad instance = new ATestBad();
         
         json = json.Replace("\\s", "");
         string[] keyValuePairs = json.Replace("{", "").Replace("}", "").Split(',');
@@ -110,7 +110,7 @@ public string ToJson()
     }
     return instance;
 }
-public static string ListToJson(List<ATest> list)
+public static string ListToJson(List<ATestBad> list)
 {StringBuilder jsonBuilder = new StringBuilder();
     jsonBuilder.Append("[");
     
@@ -125,32 +125,32 @@ public static string ListToJson(List<ATest> list)
     jsonBuilder.Append("]");
     return jsonBuilder.ToString();
 }
-public static List<ATest> ListFromJson(string json)
-{List <ATest> list = new List<ATest>();
+public static List<ATestBad> ListFromJson(string json)
+{List <ATestBad> list = new List<ATestBad>();
 json = Regex.Replace(json, @"\s", "");
 json = Regex.Replace(json, @"\[", "").Replace("]", "");
 string[] jsonObjects = Regex.Split(json, @"(?<=\}),\s*(?=\{)");  
 foreach (string jsonObject in jsonObjects)
     {
-    list.Add(ATest.FromJson(jsonObject));
+    list.Add(ATestBad.FromJson(jsonObject));
     }
     return list;
 }
-public class ATestComparer : IEqualityComparer<ATest>
+public class ATestBadComparer : IEqualityComparer<ATestBad>
 {
-    public bool Equals(ATest? x, ATest? y)
+    public bool Equals(ATestBad? x, ATestBad? y)
         {
         if (x == null) return false; 
         return x.Equals(y);
         }
-    public int GetHashCode(ATest obj)
+    public int GetHashCode(ATestBad obj)
         {
         return obj.GetHashCode(); 
         }
 }
-    public ATestInternal ToATestInternal() {
-        return new ATestInternal(
-         Int32.Parse(anInt)
+    public ATestBadInternal ToATestBadInternal() {
+        return new ATestBadInternal(
+         int.Parse(anInt)
         , aString
         , Double.Parse(aDouble)
         ); }

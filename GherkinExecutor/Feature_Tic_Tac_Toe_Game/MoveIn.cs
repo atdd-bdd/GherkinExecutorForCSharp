@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GherkinExecutor.FeatureTicTacToeGame
+namespace gherkinexecutor.Feature_Tic_Tac_Toe_Game
 {
     class MoveIn
     {
@@ -30,23 +30,8 @@ namespace GherkinExecutor.FeatureTicTacToeGame
             }
         }
 
-        public Move ToMove()
-        {
-            return new Move(Row, Column, Mark);
-        }
-    }
-
-    class Move
-    {
-        public string Row { get; }
-        public string Column { get; }
-        public string Mark { get; }
-
-        public Move(string row, string column, string mark)
-        {
-            this.Row = row;
-            this.Column = column;
-            this.Mark = mark;
-        }
+        public Move ToMove() => new(Row, Column, Mark);
     }
 }
+
+    
