@@ -1,2 +1,2 @@
-﻿[assembly: Parallelize(Workers =1)]
+﻿[assembly: Parallelize(Workers = 1)]
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace gherkinexecutor.Feature_Tic_Tac_Toe_Game
+﻿namespace gherkinexecutor.Feature_Tic_Tac_Toe_Game
 {
     class MoveIn
     {
@@ -34,4 +32,3 @@ namespace gherkinexecutor.Feature_Tic_Tac_Toe_Game
     }
 }
 
-    

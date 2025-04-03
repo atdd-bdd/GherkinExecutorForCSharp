@@ -1,7 +1,5 @@
 ﻿namespace gherkinexecutor.Feature_Examples
 {
-
-    using System;
     using System.Collections.Generic;
     public class SolutionForListOfNumber
     {

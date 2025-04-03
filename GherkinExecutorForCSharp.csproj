@@ -9,6 +9,14 @@
 	<StartupObject>GherkinExecutorForCSharp.Translate</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="GherkinExecutor\Feature_Simple_Test\Feature_Simple_Test_glue.sc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="GherkinExecutor\Feature_Simple_Test\Feature_Simple_Test_glue.sc" />
+  </ItemGroup>
+
 	
 
 

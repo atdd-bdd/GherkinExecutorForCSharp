@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace gherkinexecutor.Feature_Full_Test
+﻿namespace gherkinexecutor.Feature_Full_Test
 {
     public class ID
     {

@@ -1,13 +1,16 @@
-namespace gherkinexecutor.Feature_Examples{
-[TestClass]
-public class Feature_Examples{
+namespace gherkinexecutor.Feature_Examples
+{
+    [TestClass]
+    public class Feature_Examples
+    {
 
 
-    [TestMethod]
-    public void Test_Scenario_Temperature_Conversion(){
-         Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
+        [TestMethod]
+        public void Test_Scenario_Temperature_Conversion()
+        {
+            Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
 
-         List<FandC> objectList1 = new List<FandC>{
+            List<FandC> objectList1 = new List<FandC>{
              new FandC.Builder()
                 .SetF("32")
                 .SetC("0")
@@ -24,13 +27,14 @@ public class Feature_Examples{
                 .SetNotes("Below zero")
                 .Build()
             };
-        feature_Examples_glue_object.Calculation_Convert_F_to_C(objectList1);
+            feature_Examples_glue_object.Calculation_Convert_F_to_C(objectList1);
         }
-    [TestMethod]
-    public void Test_Scenario_Domain_Term_ID(){
-         Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
+        [TestMethod]
+        public void Test_Scenario_Domain_Term_ID()
+        {
+            Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
 
-         List<ValueValid> objectList2 = new List<ValueValid>{
+            List<ValueValid> objectList2 = new List<ValueValid>{
              new ValueValid.Builder()
                 .SetValue("Q1234")
                 .SetValid("true")
@@ -52,13 +56,14 @@ public class Feature_Examples{
                 .SetNotes("Must begin with Q")
                 .Build()
             };
-        feature_Examples_glue_object.Rule_ID_must_have_exactly_5_letters_and_begin_with_Q(objectList2);
+            feature_Examples_glue_object.Rule_ID_must_have_exactly_5_letters_and_begin_with_Q(objectList2);
         }
-    [TestMethod]
-    public void Test_Scenario_Filter_Data(){
-         Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
+        [TestMethod]
+        public void Test_Scenario_Filter_Data()
+        {
+            Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
 
-         List<LabelValue> objectList3 = new List<LabelValue>{
+            List<LabelValue> objectList3 = new List<LabelValue>{
              new LabelValue.Builder()
                 .SetID("Q1234")
                 .SetValue("1")
@@ -72,27 +77,28 @@ public class Feature_Examples{
                 .SetValue("3")
                 .Build()
             };
-        feature_Examples_glue_object.Given_list_of_numbers(objectList3);
+            feature_Examples_glue_object.Given_list_of_numbers(objectList3);
 
-        List<List<string>> stringListList4 = new List<List<string>>{
+            List<List<string>> stringListList4 = new List<List<string>>{
            new List<string>{
             "Q1234"
             }
             };
-        feature_Examples_glue_object.When_filtered_by_ID_with_value(stringListList4);
+            feature_Examples_glue_object.When_filtered_by_ID_with_value(stringListList4);
 
-        List<List<string>> stringListList5 = new List<List<string>>{
+            List<List<string>> stringListList5 = new List<List<string>>{
            new List<string>{
             "4"
             }
             };
-        feature_Examples_glue_object.Then_sum_is(stringListList5);
+            feature_Examples_glue_object.Then_sum_is(stringListList5);
         }
-    [TestMethod]
-    public void Test_Scenario_Filter_Data_Another_Way(){
-         Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
+        [TestMethod]
+        public void Test_Scenario_Filter_Data_Another_Way()
+        {
+            Feature_Examples_glue feature_Examples_glue_object = new Feature_Examples_glue();
 
-         List<LabelValue> objectList6 = new List<LabelValue>{
+            List<LabelValue> objectList6 = new List<LabelValue>{
              new LabelValue.Builder()
                 .SetID("Q1234")
                 .SetValue("1")
@@ -106,21 +112,21 @@ public class Feature_Examples{
                 .SetValue("3")
                 .Build()
             };
-        feature_Examples_glue_object.Given_list_of_numbers(objectList6);
+            feature_Examples_glue_object.Given_list_of_numbers(objectList6);
 
-         List<FilterValue> objectList7 = new List<FilterValue>{
+            List<FilterValue> objectList7 = new List<FilterValue>{
              new FilterValue.Builder()
                 .SetValue("Q1234")
                 .Build()
             };
-        feature_Examples_glue_object.When_filtered_by(objectList7);
+            feature_Examples_glue_object.When_filtered_by(objectList7);
 
-         List<ResultValue> objectList8 = new List<ResultValue>{
+            List<ResultValue> objectList8 = new List<ResultValue>{
              new ResultValue.Builder()
                 .SetSum("4")
                 .Build()
             };
-        feature_Examples_glue_object.Then_result(objectList8);
+            feature_Examples_glue_object.Then_result(objectList8);
         }
     }
 }

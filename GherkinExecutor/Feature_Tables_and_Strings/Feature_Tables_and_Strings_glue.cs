@@ -2,8 +2,6 @@ namespace gherkinexecutor.Feature_Tables_and_Strings
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
     public class Feature_Tables_and_Strings_glue
@@ -178,7 +176,7 @@ namespace gherkinexecutor.Feature_Tables_and_Strings
                 Console.WriteLine(value);
                 // Add calls to production code and asserts
             }
-            bool result = originalList.SequenceEqual(values, new ExampleClass.ExampleClassComparer()); 
+            bool result = originalList.SequenceEqual(values, new ExampleClass.ExampleClassComparer());
 
         }
 
