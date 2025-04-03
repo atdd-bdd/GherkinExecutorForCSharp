@@ -293,7 +293,7 @@ namespace GherkinExecutorForCSharp
             switch (Configuration.TestFramework)
             {
                 case "MSTest":
-                    TestPrint("[TestClass");
+                    TestPrint("[TestClass]");
                     break;
                 case "NUnit":
                     TestPrint("[TestFixture]");

@@ -1,6 +1,6 @@
 namespace gherkinexecutor.Feature_Data_Definition_Error{
 using System.IO;
-[TestClass
+[TestClass]
 public class Feature_Data_Definition_Error{
        void Log(string value)
             {
