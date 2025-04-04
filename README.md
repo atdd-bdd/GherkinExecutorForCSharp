@@ -16,7 +16,7 @@ This documents the  setup required for C#.    It assumes you have some experienc
 
 - Go to [GitHub - atdd-bdd/GherkinExecutorForCSharp](https://github.com/atdd-bdd/GherkinExecutorForCSharp)
   
-  Into `GherkinExecuto`r folder:
+  Into `GherkinExecutor` folder:
   
   Download` translate.cs`  [GherkinExecutorForCSharp/Translaste.cs at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/Translaste.cs)
   
