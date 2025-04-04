@@ -49,10 +49,10 @@ public class SomeTypesInternal {
 
    {
    int hashCode = 1; 
-      hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
+       hashCode ^= anInt.GetHashCode();
     hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
-    hashCode ^= aChar == null ? 0 : aChar.GetHashCode();
-    hashCode ^= achar == null ? 0 : achar.GetHashCode();
+     hashCode ^= aChar.GetHashCode();
+     hashCode ^= achar.GetHashCode();
 return hashCode;
 }
 public override string ToString()

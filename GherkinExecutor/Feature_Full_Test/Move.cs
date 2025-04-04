@@ -40,8 +40,8 @@ public class Move {
 
    {
    int hashCode = 1; 
-      hashCode ^= row == null ? 0 : row.GetHashCode();
-    hashCode ^= column == null ? 0 : column.GetHashCode();
+       hashCode ^= row.GetHashCode();
+     hashCode ^= column.GetHashCode();
     hashCode ^= mark == null ? 0 : mark.GetHashCode();
 return hashCode;
 }

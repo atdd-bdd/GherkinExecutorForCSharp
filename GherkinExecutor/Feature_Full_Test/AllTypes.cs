@@ -215,20 +215,20 @@ public class AllTypes {
 
    {
    int hashCode = 1; 
-      hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
-    hashCode ^= aByte == null ? 0 : aByte.GetHashCode();
-    hashCode ^= aSByte == null ? 0 : aSByte.GetHashCode();
-    hashCode ^= aShort == null ? 0 : aShort.GetHashCode();
-    hashCode ^= aUshort == null ? 0 : aUshort.GetHashCode();
-    hashCode ^= aUint == null ? 0 : aUint.GetHashCode();
-    hashCode ^= aLong == null ? 0 : aLong.GetHashCode();
-    hashCode ^= aUlong == null ? 0 : aUlong.GetHashCode();
-    hashCode ^= aFloat == null ? 0 : aFloat.GetHashCode();
-    hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
-    hashCode ^= aDecimal == null ? 0 : aDecimal.GetHashCode();
-    hashCode ^= aBool == null ? 0 : aBool.GetHashCode();
+       hashCode ^= anInt.GetHashCode();
+     hashCode ^= aByte.GetHashCode();
+     hashCode ^= aSByte.GetHashCode();
+     hashCode ^= aShort.GetHashCode();
+     hashCode ^= aUshort.GetHashCode();
+     hashCode ^= aUint.GetHashCode();
+     hashCode ^= aLong.GetHashCode();
+     hashCode ^= aUlong.GetHashCode();
+     hashCode ^= aFloat.GetHashCode();
+     hashCode ^= aDouble.GetHashCode();
+     hashCode ^= aDecimal.GetHashCode();
+     hashCode ^= aBool.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
-    hashCode ^= aChar == null ? 0 : aChar.GetHashCode();
+     hashCode ^= aChar.GetHashCode();
     hashCode ^= anIntObject == null ? 0 : anIntObject.GetHashCode();
     hashCode ^= aByteObject == null ? 0 : aByteObject.GetHashCode();
     hashCode ^= aSByteObject == null ? 0 : aSByteObject.GetHashCode();

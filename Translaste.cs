@@ -28,7 +28,7 @@ namespace GherkinExecutorForCSharp
 
         private bool inCleanup = false; // current scenario is cleanup
         private bool finalCleanup = false; // for the last part of scenario
-        private StreamWriter testFile;
+        private StreamWriter? testFile;
 
         private bool featureActedOn = false; // Have found a feature step
         private string featureName = "";
@@ -529,7 +529,7 @@ namespace GherkinExecutorForCSharp
         {
             try
             {
-                testFile.WriteLine(line);
+                testFile?.WriteLine(line);
             }
             catch (IOException)
             {
@@ -567,7 +567,7 @@ namespace GherkinExecutorForCSharp
             TestPrint("");
             try
             {
-                testFile.Close();
+                testFile?.Close();
             }
             catch (IOException)
             {
@@ -1150,9 +1150,9 @@ namespace GherkinExecutorForCSharp
         class StepConstruct
         {
             private int stepNumberInScenario;
-            private string glueObject;
+            private string glueObject = ""; 
             private Translate translate;
-            private TemplateConstruct templateConstruct;
+            private TemplateConstruct? templateConstruct;
 
             public StepConstruct(Translate translate)
             {
@@ -1211,7 +1211,7 @@ namespace GherkinExecutorForCSharp
                 }
                 translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(stringList{s});");
-                templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, "String");
+                templateConstruct?.MakeFunctionTemplateIsList(dataType, fullName, "String");
             }
 
             private void StringToString(List<string> table, string fullName)
@@ -1225,7 +1225,7 @@ namespace GherkinExecutorForCSharp
                 }
                 translate.TestPrint("            \"\"\".Trim();");
                 translate.TestPrint($"        {glueObject}.{fullName}(string{s});");
-                templateConstruct.MakeFunctionTemplate("string", fullName);
+                templateConstruct?.MakeFunctionTemplate("string", fullName);
             }
 
             private void TableToListOfListOfObject(List<string> table, string fullName, string className)
@@ -1243,7 +1243,7 @@ namespace GherkinExecutorForCSharp
                 }
                 translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
-                templateConstruct.MakeFunctionTemplateObject(dataType, fullName, className);
+                templateConstruct?.MakeFunctionTemplateObject(dataType, fullName, className);
                 CreateConvertTableToListOfListOfObjectMethod(className);
             }
 
@@ -1262,7 +1262,7 @@ namespace GherkinExecutorForCSharp
                 }
                 translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(stringListList{s});");
-                templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, "List<string>");
+                templateConstruct?.MakeFunctionTemplateIsList(dataType, fullName, "List<string>");
             }
 
             private void CreateTheTable(List<string> comment, List<string> table, string fullName)
@@ -1360,7 +1360,7 @@ namespace GherkinExecutorForCSharp
                 translate.TestPrint("            \"\"\".Trim();");
                 translate.TestPrint($"        {glueObject}.{fullName}(table{s});");
                 // other.TestPrint("");
-                templateConstruct.MakeFunctionTemplate("string", fullName);
+                templateConstruct?.MakeFunctionTemplate("string", fullName);
             }
 
             private void ConvertBarLineToList(string lineIn, string commaIn)
@@ -1412,7 +1412,7 @@ namespace GherkinExecutorForCSharp
                 translate.TestPrint("            };");
                 translate.TestPrint($"        {glueObject}.{fullName}(objectList{s});");
 
-                templateConstruct.MakeFunctionTemplateIsList(dataType, fullName, className);
+                templateConstruct?.MakeFunctionTemplateIsList(dataType, fullName, className);
             }
 
             private List<List<string>> ConvertToListList(List<string> table, bool transpose)
@@ -1464,7 +1464,7 @@ namespace GherkinExecutorForCSharp
             private void NoParameter(string fullName)
             {
                 translate.TestPrint($"        {glueObject}.{fullName}();");
-                templateConstruct.MakeFunctionTemplateNothing("", fullName);
+                templateConstruct?.MakeFunctionTemplateNothing("", fullName);
             }
 
             public List<List<string>> Transpose(List<List<string>> matrix)
@@ -1488,7 +1488,7 @@ namespace GherkinExecutorForCSharp
 
         public class TemplateConstruct
         {
-            public StreamWriter glueTemplateFile;
+            public StreamWriter? glueTemplateFile;
             private Translate translate;
             public TemplateConstruct(Translate? other)
             {
@@ -1501,7 +1501,7 @@ namespace GherkinExecutorForCSharp
             {
                 try
                 {
-                    glueTemplateFile.WriteLine(line);
+                    glueTemplateFile?.WriteLine(line);
                 }
                 catch (IOException e)
                 {
@@ -1650,8 +1650,7 @@ namespace GherkinExecutorForCSharp
                 TemplatePrint("}");   // End the namespace
                 try
                 {
-                    translate.testFile.Close();
-                    glueTemplateFile.Close();
+                    glueTemplateFile?.Close();
                 }
                 catch (IOException e)
                 {
@@ -1675,7 +1674,7 @@ namespace GherkinExecutorForCSharp
 
         public class DataConstruct
         {
-            private StreamWriter dataDefinitionFile;
+            private StreamWriter? dataDefinitionFile;
             private const string throwString = "";
             private Translate translate;
             public DataConstruct(Translate? other)
@@ -1799,6 +1798,12 @@ namespace GherkinExecutorForCSharp
                         hashCode ^= NAME == null ? 0 : NAME.GetHashCode();
 
                     """;
+                    if (PrimitiveDataType(variable))
+                       onePart =
+                       """
+                            hashCode ^= NAME.GetHashCode();
+ 
+                       """;
                     middlePart.Append(onePart.Replace("NAME", variable.Name));
                 }
                 string lastPart =
@@ -1878,7 +1883,7 @@ namespace GherkinExecutorForCSharp
             {
                 try
                 {
-                    dataDefinitionFile.Close();
+                    dataDefinitionFile?.Close();
                 }
                 catch (IOException e)
                 {
@@ -2307,7 +2312,7 @@ namespace GherkinExecutorForCSharp
             {
                 try
                 {
-                    dataDefinitionFile.WriteLine(line);
+                    dataDefinitionFile?.WriteLine(line);
                 }
                 catch (IOException e)
                 {

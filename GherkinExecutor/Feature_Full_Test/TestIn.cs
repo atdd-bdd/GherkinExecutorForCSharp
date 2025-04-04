@@ -40,9 +40,9 @@ public class TestIn {
 
    {
    int hashCode = 1; 
-      hashCode ^= aValue == null ? 0 : aValue.GetHashCode();
+       hashCode ^= aValue.GetHashCode();
     hashCode ^= bValue == null ? 0 : bValue.GetHashCode();
-    hashCode ^= cValue == null ? 0 : cValue.GetHashCode();
+     hashCode ^= cValue.GetHashCode();
 return hashCode;
 }
     public class Builder {
