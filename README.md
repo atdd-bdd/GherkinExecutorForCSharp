@@ -68,4 +68,3 @@ If you want to compare two lists of objects, you can use the following.  Replace
 
            bool result = expectedList.SequenceEqual(actualList, new ClassName.ClassNameComparer());
             Console.WriteLine("SequenceEqual: " + result);
-
