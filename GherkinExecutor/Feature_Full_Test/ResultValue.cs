@@ -26,7 +26,7 @@ public class ResultValue {
 
    {
    int hashCode = 1; 
-      hashCode ^= sum == null ? 0 : sum.GetHashCode();
+       hashCode ^= sum.GetHashCode();
 return hashCode;
 }
     public class Builder {
@@ -115,7 +115,7 @@ public class ResultValueComparer : IEqualityComparer<ResultValue>
 }
     public ResultValueInternal ToResultValueInternal() {
         return new ResultValueInternal(
-         Int32.Parse(sum)
+         int.Parse(sum)
         ); }
     }
 }

@@ -33,7 +33,7 @@ public class SimpleClass {
 
    {
    int hashCode = 1; 
-      hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
+       hashCode ^= anInt.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
 return hashCode;
 }
@@ -133,7 +133,7 @@ public class SimpleClassComparer : IEqualityComparer<SimpleClass>
 }
     public SimpleClassInternal ToSimpleClassInternal() {
         return new SimpleClassInternal(
-         Int32.Parse(anInt)
+         int.Parse(anInt)
         , aString
         ); }
     }

@@ -40,7 +40,7 @@ public class ATest0 {
 
    {
    int hashCode = 1; 
-      hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
+       hashCode ^= anInt.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
     hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
 return hashCode;
@@ -151,7 +151,7 @@ public class ATest0Comparer : IEqualityComparer<ATest0>
 }
     public ATestInternal ToATestInternal() {
         return new ATestInternal(
-         Int32.Parse(anInt)
+         int.Parse(anInt)
         , aString
         , Double.Parse(aDouble)
         ); }

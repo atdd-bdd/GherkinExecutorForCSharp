@@ -10,25 +10,25 @@ This documents the  setup required for C#.    It assumes you have some experienc
 
 ### Setup
 
-- :Create a MSTest or NUnit test project (or you can use an existing test project)
+- Create a MSTest or NUnit test project (or you can use an existing test project)
 
 -  Add a folder:   `GherkinExecutor  `
 
 - Go to [GitHub - atdd-bdd/GherkinExecutorForCSharp](https://github.com/atdd-bdd/GherkinExecutorForCSharp)
   
-  Download` translate.cs`  [GherkinExecutorForCSharp/Translaste.cs at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/Translaste.cs)
+  Into `GherkinExecuto`r folder:
   
-  Into `GherkinExecuto`r folder, 
+  Download` translate.cs`  [GherkinExecutorForCSharp/Translaste.cs at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/Translaste.cs)
   
   Download starting.feature [GherkinExecutorForCSharp/GherkinExecutor/starting.feature at main · atdd-bdd/GherkinExecutorForCSharp · GitHub ](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/starting.feature)
 
-- In the `GherkinExecutor `folder, create a `features.tx`t file that contains 
+- In the `GherkinExecutor `folder, create a `features.txt` file that contains 
 
 ```
 starting.feature 
 ```
 
-        In the same folder, create a` options.tx`t file that is empty 
+        In the same folder, create a `options.txt` file that is empty 
 
 - Edit the `csproj `file for the project.   
 
@@ -36,7 +36,7 @@ starting.feature
 
 ```
 
-    \<StartupObject>GherkinExecutorForCSharp.Translate</StartupObject>
+    <StartupObject>GherkinExecutorForCSharp.Translate</StartupObject>
 ```
 
 - Change the test framework, if necessary, in `Translate.cs` 
@@ -52,7 +52,7 @@ starting.feature
 
         Rename` Feature_Starting_glue.tmp`l to `Feature_Starting_glue.cs `
 
-       Set the `Build Action `to` C# Compile` for this file
+       Set the `Build Action `to` C# Compiler` for this file
 
 - Now` Run Tests`
 
@@ -64,7 +64,8 @@ If you add a `Scenario `to the feature file, you need to rerun `Translate`.     
 
 
 
-If you want to compare two lists of objects, you can use the following.   Repleace CLassName with the actual class:
+If you want to compare two lists of objects, you can use the following.  Replace `ClassName `with the actual data class:
 
            bool result = expectedList.SequenceEqual(actualList, new ClassName.ClassNameComparer());
             Console.WriteLine("SequenceEqual: " + result);
+

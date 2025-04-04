@@ -40,8 +40,8 @@ public class FandC {
 
    {
    int hashCode = 1; 
-      hashCode ^= f == null ? 0 : f.GetHashCode();
-    hashCode ^= c == null ? 0 : c.GetHashCode();
+       hashCode ^= f.GetHashCode();
+     hashCode ^= c.GetHashCode();
     hashCode ^= notes == null ? 0 : notes.GetHashCode();
 return hashCode;
 }
@@ -151,8 +151,8 @@ public class FandCComparer : IEqualityComparer<FandC>
 }
     public FandCInternal ToFandCInternal() {
         return new FandCInternal(
-         Int32.Parse(f)
-        , Int32.Parse(c)
+         int.Parse(f)
+        , int.Parse(c)
         , notes
         ); }
     }

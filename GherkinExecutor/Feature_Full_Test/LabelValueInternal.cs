@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 using System.Numerics;
 public class LabelValueInternal {
     public ID iD;
-    public Int32 value;
+    public int value;
      
     public static string ToDataTypeString() {
         return "LabelValueInternal {{"
         +"ID " 
-        +"Int32 " 
+        +"int " 
         + "} "; }
     public LabelValue ToLabelValue() {
         return new LabelValue(
@@ -20,7 +20,7 @@ public class LabelValueInternal {
         ); }
     public LabelValueInternal(
         ID iD
-        ,Int32 value
+        ,int value
         ) {
         this.iD = iD;
         this.value = value;
@@ -31,14 +31,14 @@ public class LabelValueInternal {
         LabelValueInternal _LabelValueInternal = (LabelValueInternal) o;
         return 
             (_LabelValueInternal.iD.Equals(this.iD))
-             && (_LabelValueInternal.value.Equals(this.value))
+             && (_LabelValueInternal.value == (this.value))
         ;  }
     public override int GetHashCode()
 
    {
    int hashCode = 1; 
       hashCode ^= iD == null ? 0 : iD.GetHashCode();
-    hashCode ^= value == null ? 0 : value.GetHashCode();
+     hashCode ^= value.GetHashCode();
 return hashCode;
 }
 public override string ToString()

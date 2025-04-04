@@ -34,7 +34,7 @@ public class LabelValue {
    {
    int hashCode = 1; 
       hashCode ^= iD == null ? 0 : iD.GetHashCode();
-    hashCode ^= value == null ? 0 : value.GetHashCode();
+     hashCode ^= value.GetHashCode();
 return hashCode;
 }
     public class Builder {
@@ -134,7 +134,7 @@ public class LabelValueComparer : IEqualityComparer<LabelValue>
     public LabelValueInternal ToLabelValueInternal() {
         return new LabelValueInternal(
          new ID(iD)
-        , Int32.Parse(value)
+        , int.Parse(value)
         ); }
     }
 }

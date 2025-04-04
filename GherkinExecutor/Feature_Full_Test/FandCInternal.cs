@@ -5,14 +5,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Numerics;
 public class FandCInternal {
-    public Int32 f;
-    public Int32 c;
+    public int f;
+    public int c;
     public String notes;
      
     public static string ToDataTypeString() {
         return "FandCInternal {{"
-        +"Int32 " 
-        +"Int32 " 
+        +"int " 
+        +"int " 
         +"String " 
         + "} "; }
     public FandC ToFandC() {
@@ -22,8 +22,8 @@ public class FandCInternal {
         ,notes.ToString()
         ); }
     public FandCInternal(
-        Int32 f
-        ,Int32 c
+        int f
+        ,int c
         ,String notes
         ) {
         this.f = f;
@@ -35,16 +35,16 @@ public class FandCInternal {
         if (o == null || GetType() != o.GetType()) return false;
         FandCInternal _FandCInternal = (FandCInternal) o;
         return 
-            (_FandCInternal.f.Equals(this.f))
-             && (_FandCInternal.c.Equals(this.c))
+            (_FandCInternal.f == (this.f))
+             && (_FandCInternal.c == (this.c))
              && (_FandCInternal.notes.Equals(this.notes))
         ;  }
     public override int GetHashCode()
 
    {
    int hashCode = 1; 
-      hashCode ^= f == null ? 0 : f.GetHashCode();
-    hashCode ^= c == null ? 0 : c.GetHashCode();
+       hashCode ^= f.GetHashCode();
+     hashCode ^= c.GetHashCode();
     hashCode ^= notes == null ? 0 : notes.GetHashCode();
 return hashCode;
 }

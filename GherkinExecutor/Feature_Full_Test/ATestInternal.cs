@@ -5,13 +5,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Numerics;
 public class ATestInternal {
-    public Int32 anInt;
+    public int anInt;
     public String aString;
     public Double aDouble;
      
     public static string ToDataTypeString() {
         return "ATestInternal {{"
-        +"Int32 " 
+        +"int " 
         +"String " 
         +"Double " 
         + "} "; }
@@ -22,7 +22,7 @@ public class ATestInternal {
         ,Convert.ToString(aDouble)
         ); }
     public ATestInternal(
-        Int32 anInt
+        int anInt
         ,String aString
         ,Double aDouble
         ) {
@@ -35,7 +35,7 @@ public class ATestInternal {
         if (o == null || GetType() != o.GetType()) return false;
         ATestInternal _ATestInternal = (ATestInternal) o;
         return 
-            (_ATestInternal.anInt.Equals(this.anInt))
+            (_ATestInternal.anInt == (this.anInt))
              && (_ATestInternal.aString.Equals(this.aString))
              && (_ATestInternal.aDouble.Equals(this.aDouble))
         ;  }
@@ -43,7 +43,7 @@ public class ATestInternal {
 
    {
    int hashCode = 1; 
-      hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
+       hashCode ^= anInt.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
     hashCode ^= aDouble == null ? 0 : aDouble.GetHashCode();
 return hashCode;

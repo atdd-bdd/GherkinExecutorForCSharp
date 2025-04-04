@@ -5,12 +5,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Numerics;
 public class SimpleClassInternal {
-    public Int32 anInt;
+    public int anInt;
     public String aString;
      
     public static string ToDataTypeString() {
         return "SimpleClassInternal {{"
-        +"Int32 " 
+        +"int " 
         +"String " 
         + "} "; }
     public SimpleClass ToSimpleClass() {
@@ -19,7 +19,7 @@ public class SimpleClassInternal {
         ,aString.ToString()
         ); }
     public SimpleClassInternal(
-        Int32 anInt
+        int anInt
         ,String aString
         ) {
         this.anInt = anInt;
@@ -30,14 +30,14 @@ public class SimpleClassInternal {
         if (o == null || GetType() != o.GetType()) return false;
         SimpleClassInternal _SimpleClassInternal = (SimpleClassInternal) o;
         return 
-            (_SimpleClassInternal.anInt.Equals(this.anInt))
+            (_SimpleClassInternal.anInt == (this.anInt))
              && (_SimpleClassInternal.aString.Equals(this.aString))
         ;  }
     public override int GetHashCode()
 
    {
    int hashCode = 1; 
-      hashCode ^= anInt == null ? 0 : anInt.GetHashCode();
+       hashCode ^= anInt.GetHashCode();
     hashCode ^= aString == null ? 0 : aString.GetHashCode();
 return hashCode;
 }
