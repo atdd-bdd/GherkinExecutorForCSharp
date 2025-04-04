@@ -10,7 +10,7 @@ This documents the  setup required for C#.    It assumes you have some experienc
 
 ### Setup
 
-- :Create a MSTest or NUnit test project 
+- :Create a MSTest or NUnit test project (or you can use an existing test project)
 
 -  Add a folder:   `GherkinExecutor  `
 
@@ -18,7 +18,9 @@ This documents the  setup required for C#.    It assumes you have some experienc
   
   Download` translate.cs`  [GherkinExecutorForCSharp/Translaste.cs at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/Translaste.cs)
   
-  Into `GherkinExecuto`r folder, download starting.feature [GherkinExecutorForCSharp/GherkinExecutor/starting.feature at main · atdd-bdd/GherkinExecutorForCSharp · GitHub ](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/starting.feature)
+  Into `GherkinExecuto`r folder, 
+  
+  Download starting.feature [GherkinExecutorForCSharp/GherkinExecutor/starting.feature at main · atdd-bdd/GherkinExecutorForCSharp · GitHub ](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/starting.feature)
 
 - In the `GherkinExecutor `folder, create a `features.tx`t file that contains 
 
@@ -37,14 +39,14 @@ starting.feature
     \<StartupObject>GherkinExecutorForCSharp.Translate</StartupObject>
 ```
 
-- Change the test framework, if necessary, in Translate.cs 
+- Change the test framework, if necessary, in `Translate.cs` 
 
 ```
   public static readonly string TestFramework = "MSTest";
   // Could be "NUnit" 
 ```
 
-- Run the program  
+- Run the program.  When it has executed: 
 
         Go to the `Feature_Starting_glue `folder 
 
@@ -58,33 +60,11 @@ starting.feature
 
 At this point, you can implement the production code to make the test pass.
 
-If you add a `Scenario `to the feature file, you need to rerun `Translate`.     If you add new steps, you need to copy the new glue code from the `glue tmpl `file to the glue cs fie.  
+If you add a `Scenario `to the feature file, you need to rerun `Translate`.     If you add new steps, you need to copy the new glue code from the `glue tmpl `file to the` glue cs` fie.  
 
 
 
+If you want to compare two lists of objects, you can use the following.   Repleace CLassName with the actual class:
 
-
-options.txt contains the options 
-
-Change the test framework to NUnit 
-
-
-
-
-
-                                                    
-Sequence comparison - add this  line to show how it is 
-
-Must switch the build action to C# compiler after renaming the glue file from tmpl 
-
-Must add in the app.config file the following line to enable the use of the SpecFlow+ Runner
-
-```xml.
-
-This project is a Gherkin Executor for C# that allows you to run Gherkin scenarios in C#.
-                                                    
-Sequence comparison - add this 
-
-```
-
-
+           bool result = expectedList.SequenceEqual(actualList, new ClassName.ClassNameComparer());
+            Console.WriteLine("SequenceEqual: " + result);
