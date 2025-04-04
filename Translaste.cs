@@ -2160,7 +2160,7 @@ namespace GherkinExecutorForCSharp
                     case "Character":
                         return "char";
                     case "Integer":
-                        return "Int32";
+                        return "int";
                     case "boolean":
                         return "Boolean";
                     default:
