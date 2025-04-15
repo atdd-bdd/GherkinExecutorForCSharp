@@ -1,4 +1,4 @@
-namespace gherkinexecutor.Feature_Data_Definition_Error {
+namespace gherkinexecutor.Feature_Optional_Tests {
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,14 +6,14 @@ using System.Text.RegularExpressions;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using System.IO;
 
-public class Feature_Data_Definition_Error_glue {
+public class Feature_Optional_Tests_glue {
     const string DNCString = "?DNC?";
        void Log(string value)
             {
            try
            {
-           Directory.CreateDirectory("GherkinExecutor/Feature_Data_Definition_Error");
-	       using (var myLog = new StreamWriter("GherkinExecutor/Feature_Data_Definition_Error/log.txt", true))
+           Directory.CreateDirectory("GherkinExecutor/Feature_Optional_Tests");
+	       using (var myLog = new StreamWriter("GherkinExecutor/Feature_Optional_Tests/log.txt", true))
 	           {
 	           myLog.WriteLine(value);
 		        }
@@ -23,6 +23,11 @@ public class Feature_Data_Definition_Error_glue {
 			    Console.Error.WriteLine("*** Cannot write to log " + e);
 		      	}
 		    }
+
+    public void Given_This_may_be_run(){
+        Console.WriteLine("---  " + "Given_This_may_be_run");
+        Log("---  " + "Given_This_may_be_run");
+    }
 
     }
 }

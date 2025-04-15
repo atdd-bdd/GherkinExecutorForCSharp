@@ -5,7 +5,8 @@
 *define.feature
 *examples.feature
 *include.feature
-full_test.feature.sav
+*full_test.feature.sav
+optional_tests.feature
 *json.feature
 *tables_and_strings.feature
 *tic_tac_toe.feature 

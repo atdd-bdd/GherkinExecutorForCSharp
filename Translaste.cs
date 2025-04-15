@@ -1,5 +1,10 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System;
+using System.Diagnostics.Metrics;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
 using System.Text.RegularExpressions;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace GherkinExecutorForCSharp
 {
@@ -49,6 +54,16 @@ namespace GherkinExecutorForCSharp
 
         private ImportConstruct importConstruct;
         private DefineConstruct defineConstruct;
+        private readonly string filterExpression = Configuration.FilterExpression;
+        private bool skipSteps = false;
+
+        private int scenarioCount = 0;
+
+        private const string TAG_INDICATOR = "[";
+        private string tagLine = ""; // Contains last tag line
+
+        private int tagLineNumber = 0; // Line number for last tag line
+
 
         public Translate()
         {
@@ -114,7 +129,7 @@ namespace GherkinExecutorForCSharp
 
         private void ActOnLine(string line, int pass)
         {
-            var splitLine = SplitLine(line);
+            var splitLine = SplitLine(line, pass);
             List<string> words = splitLine.Item1;
             List<string> comment = splitLine.Item2;
             if (words.Count > 0)
@@ -129,11 +144,18 @@ namespace GherkinExecutorForCSharp
             }
         }
 
-        private Tuple<List<string>, List<string>> SplitLine(string line)
+        private Tuple<List<string>, List<string>> SplitLine(string line, int pass)
         {
             string[] allWords = line.Split(' ');
             List<string> words = new List<string>();
             List<string> comment = new List<string>();
+            if ((pass == 3 || pass == 2) && line.Trim().StartsWith(TAG_INDICATOR))
+            {
+                Console.WriteLine("Found tag " + line);
+                tagLine = line;
+                tagLineNumber = dataIn.GetLineNumber();
+            }
+
             bool inComment = false;
             foreach (string aWord in allWords)
             {
@@ -219,16 +241,35 @@ namespace GherkinExecutorForCSharp
                     if (pass != 2)
                         break;
                     ActOnFeature(fullName);
+                    if (TagFilterEvaluator.ShouldNotExecute(comment, filterExpression))
+                    {
+                        dataIn.goToEnd();  // skip remainder of file
+                        Console.WriteLine(" Skip Entire Feature ");
+                    }
+
                     break;
                 case "Scenario":
                     if (pass != 3)
                         break;
+                    if (TagFilterEvaluator.ShouldNotExecute(comment, filterExpression))
+                    {
+                        skipSteps = true;
+                        break;
+                    }
+                    skipSteps = false;
+
                     ActOnScenario(fullName, addBackground, false, addCleanup, inCleanup);
                     inCleanup = false;
                     break;
                 case "Background":
                     if (pass != 3)
                         break;
+                    if (TagFilterEvaluator.ShouldNotExecute(comment, filterExpression))
+                    {
+                        skipSteps = true;
+                        break;
+                    }
+                    skipSteps = false;
                     ActOnScenario(fullName, false, true, false, inCleanup);
                     addBackground = true;
                     inCleanup = false;
@@ -236,7 +277,13 @@ namespace GherkinExecutorForCSharp
                 case "Cleanup":
                     if (pass != 3)
                         break;
-                    ActOnScenario(fullName, false, false, false, inCleanup);
+                    if (TagFilterEvaluator.ShouldNotExecute(comment, filterExpression))
+                    {
+                        skipSteps = true;
+                        break;
+                    }
+                    skipSteps = false;
+                    ActOnScenario(fullName, false, true, false, inCleanup);
                     addCleanup = true;
                     inCleanup = true;
                     break;
@@ -253,21 +300,26 @@ namespace GherkinExecutorForCSharp
                 case "Calculation":
                     if (pass != 3)
                         break;
+                    if (skipSteps)
+                        break;
                     stepConstruct.ActOnStep(fullName, comment);
                     break;
                 case "Data":
                     if (pass != 2)
                         break;
+                    skipSteps = false;
                     dataConstruct.ActOnData(words);
                     break;
                 case "Import":
                     if (pass != 1)
                         break;
+                    skipSteps = false;
                     importConstruct.ActOnImport(words);
                     break;
                 case "Define":
                     if (pass != 1)
                         break;
+                    skipSteps = false;
                     defineConstruct.ActOnDefine(words);
                     break;
                 default:
@@ -290,6 +342,7 @@ namespace GherkinExecutorForCSharp
             {
                 TestPrint("using System.IO;");
             }
+            CheckForTagLine();
             switch (Configuration.TestFramework)
             {
                 case "MSTest":
@@ -302,6 +355,7 @@ namespace GherkinExecutorForCSharp
                     TestPrint("[TestClass]");
                     break;
             }
+
             TestPrint("public class " + fullName + "{");
             TestPrint(LogIt());
             TestPrint("");
@@ -390,6 +444,7 @@ namespace GherkinExecutorForCSharp
                 }
                 TestPrint("        }"); // end previous scenario
             }
+            CheckForTagLine();
             if (!fullNameToUse.StartsWith("Background") && !fullNameToUse.StartsWith("Cleanup"))
             {
                 switch (Configuration.TestFramework)
@@ -475,6 +530,7 @@ namespace GherkinExecutorForCSharp
                     + "feature.txt " + value);
         }
 
+       
         public static string QuoteIt(string defaultVal)
         {
             return "\"" + defaultVal + "\"";
@@ -535,6 +591,21 @@ namespace GherkinExecutorForCSharp
             {
                 Error("IO ERROR ");
             }
+        }
+private void CheckForTagLine()
+        {
+            if (string.IsNullOrEmpty(tagLine))
+                return;
+
+
+            if (tagLineNumber + 1 == dataIn.GetLineNumber())
+            {
+                TestPrint(tagLine);
+            }
+
+            tagLine = "";
+            tagLineNumber = 0;
+
         }
 
         private void WriteInputFeature(string filename)
@@ -784,6 +855,7 @@ namespace GherkinExecutorForCSharp
             }
             ReadFeatureList();
             ReadOptionList();
+            ReadFilterList();
             foreach (string name in Configuration.FeatureFiles)
             {
                 Translate translate = new Translate();
@@ -795,6 +867,7 @@ namespace GherkinExecutorForCSharp
         private static void ProcessArguments(string[] args)
         {
             PrintFlow("Optional arguments are logIt inTest searchTree traceOn");
+            bool filterNext = false; 
             foreach (string arg in args)
             {
                 PrintFlow("Program argument: " + arg);
@@ -816,7 +889,16 @@ namespace GherkinExecutorForCSharp
                         Configuration.SearchTree = true;
                         PrintFlow("searchTree on");
                         break;
+                    case "--filter":
+                        filterNext = true;
+                        break;
                     default:
+                        if (filterNext)
+                        {
+                            filterNext = false;
+                            Configuration.FilterExpression = arg;
+                            break;
+                        }
                         Configuration.FeatureFiles.Add(arg);
                         break;
                 }
@@ -840,10 +922,33 @@ namespace GherkinExecutorForCSharp
             }
             catch (Exception)
             {
-                Console.Error.WriteLine("Error: Unable to read " + filepath);
+                Console.WriteLine("Information: Unable to read " + filepath);
                 return;
             }
             ProcessArguments(raw.ToArray());
+        }
+
+public static void ReadFilterList()
+        {
+            string filepath = Configuration.FeatureSubDirectory + "filter.txt";
+            PrintFlow("Path is " + filepath);
+
+            List<string> raw;
+            try
+            {
+                raw = new List<string>(File.ReadAllLines(filepath));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Information: Unable to read " + e.Message + " " + filepath);
+                return;
+            }
+
+            string[] arguments = new string[1];
+            raw.CopyTo(arguments, 0);
+
+            Configuration.FilterExpression = arguments[0];
+            Console.WriteLine("Filter is " + arguments[0]);
         }
 
         public static void ReadFeatureList()
@@ -1124,6 +1229,11 @@ namespace GherkinExecutorForCSharp
             public void Reset()
             {
                 index = 0;
+            }
+
+            internal void goToEnd()
+            {
+                index = linesIn.Count; 
             }
         }
         public record Pair<K, V>(K key, V value)
@@ -2571,6 +2681,9 @@ namespace GherkinExecutorForCSharp
                 "using System.Text.RegularExpressions;"
         };
 
+            public static String FilterExpression = ""; // will hold filter expression from command line or file
+
+
             public static readonly List<string> FeatureFiles = new List<string>
             {
                  // "starting.feature", // Something to try out after setup
@@ -2578,6 +2691,70 @@ namespace GherkinExecutorForCSharp
             };
         }
     }
+static class TagFilterEvaluator
+    {
+        // Author is Microsoft CoPilot
+
+        public static bool ShouldNotExecute(List<string> words, string filterExpression)
+        {
+            HashSet<string> scenarioTags = new HashSet<string>(words);
+            return !ShouldExecute(scenarioTags, filterExpression);
+        }
+
+        public static bool ShouldExecute(HashSet<string> scenarioTags, string filterExpression)
+        {
+            if (string.IsNullOrWhiteSpace(filterExpression))
+                return true;
+
+            List<HashSet<string>> requiredConditions = new List<HashSet<string>>();
+            HashSet<string> excludedTags = new HashSet<string>();
+
+            // Parse the expression into required and excluded conditions
+            ParseExpression(filterExpression, requiredConditions, excludedTags);
+
+            // Check if the scenario contains any excluded tags
+            bool hasExcludedTag = scenarioTags.Any(excludedTags.Contains);
+
+            // Check if the scenario matches any required condition group (OR logic)
+            bool matchesRequired = !requiredConditions.Any() ||
+                                   requiredConditions.Any(scenarioTags.IsSupersetOf);
+
+            // Execute if it meets a required condition AND does NOT have an excluded tag
+            return matchesRequired && !hasExcludedTag;
+        }
+
+        private static void ParseExpression(string expression, List<HashSet<string>> requiredConditions, HashSet<string> excludedTags)
+        {
+            // Split by "OR" to get groups
+            string[] groups = expression.Split(new[] { " OR " }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string group in groups)
+            {
+                HashSet<string> tags = new HashSet<string>();
+
+                // Split each group by "AND"
+                string[] elements = group.Trim().Split(new[] { " AND " }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string element in elements)
+                {
+                    string trimmedElement = element.Trim();
+                    if (trimmedElement.StartsWith("NOT "))
+                    {
+                        excludedTags.Add(trimmedElement.Replace("NOT ", "").Trim()); // Store excluded tags
+                    }
+                    else
+                    {
+                        tags.Add(trimmedElement); // Store required tags
+                    }
+                }
+
+                if (tags.Count > 0)
+                {
+                    requiredConditions.Add(tags);
+                }
+            }
+        }
+    }
+
+
 }
 
 
