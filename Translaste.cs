@@ -30,8 +30,8 @@ namespace GherkinExecutorForCSharp
         private bool firstScenario = true; // If first scenario
         private bool addBackground = false;  // Have seen Background
         private bool addCleanup = false;  // have seen Cleanup
+        private bool inCleanup = false; 
 
-        private bool inCleanup = false; // current scenario is cleanup
         private bool finalCleanup = false; // for the last part of scenario
         private StreamWriter? testFile;
 
@@ -58,6 +58,8 @@ namespace GherkinExecutorForCSharp
         private bool skipSteps = false;
 
         private int scenarioCount = 0;
+        private int backgroundCount = 0;
+        private int cleanupCount = 0;
 
         private const string TAG_INDICATOR = "[";
         private string tagLine = ""; // Contains last tag line
@@ -257,35 +259,26 @@ namespace GherkinExecutorForCSharp
                         break;
                     }
                     skipSteps = false;
+                    ActOnScenario(fullName);
+                    inCleanup = false;
+                    break;
 
-                    ActOnScenario(fullName, addBackground, false, addCleanup, inCleanup);
-                    inCleanup = false;
-                    break;
                 case "Background":
-                    if (pass != 3)
-                        break;
-                    if (TagFilterEvaluator.ShouldNotExecute(comment, filterExpression))
-                    {
-                        skipSteps = true;
-                        break;
-                    }
-                    skipSteps = false;
-                    ActOnScenario(fullName, false, true, false, inCleanup);
                     addBackground = true;
-                    inCleanup = false;
+                     if (pass != 3)
+                        break;
+                    skipSteps = false;
+                    inCleanup = true; 
+                    ActOnBackground(fullName);
                     break;
+
                 case "Cleanup":
+                    addCleanup = true;
                     if (pass != 3)
                         break;
-                    if (TagFilterEvaluator.ShouldNotExecute(comment, filterExpression))
-                    {
-                        skipSteps = true;
-                        break;
-                    }
                     skipSteps = false;
-                    ActOnScenario(fullName, false, true, false, inCleanup);
-                    addCleanup = true;
-                    inCleanup = true;
+                    inCleanup = true; 
+                    ActOnCleanup(fullName);
                     break;
                 case "But":
                 case "Given":
@@ -414,66 +407,134 @@ namespace GherkinExecutorForCSharp
             return char.ToLower(temp[0]) + temp.Substring(1);
         }
 
-        private void ActOnScenario(string fullName, bool addBackground, bool inBackground, bool addCleanup, bool inCleanup)
+
+        private void ActOnScenario(string fullName)
         {
-            Trace("In background " + inBackground);
+            scenarioCount++;
             string fullNameToUse = fullName;
+
             if (scenarios.ContainsKey(fullName))
             {
                 fullNameToUse += stepCount;
-                Error("Scenario name duplicated renamed " + fullNameToUse);
+                Error("Scenario name duplicated, renamed " + fullNameToUse);
             }
             else
             {
                 scenarios[fullNameToUse] = "";
             }
+
             stepNumberInScenario = 0;
-            if (inCleanup)
-                finalCleanup = false;
-            else if (addCleanup)
+
+            // Ensure cleanup is called for the final scenario
+            if (addCleanup)
                 finalCleanup = true;
+            else
+                finalCleanup = false; 
+
             if (firstScenario)
             {
                 firstScenario = false;
             }
             else
             {
-                if (addCleanup && !inCleanup)
-                {
-                    TestPrint("        Test_Cleanup(" + glueObject + "); // from previous");
-                }
-                TestPrint("        }"); // end previous scenario
+                // Finishing up previous scenario
+                if (addCleanup && !inCleanup) 
+                    TestPrint($"        Test_Cleanup({glueObject}); // from previous");
+
+                TestPrint("        }"); // End previous scenario
             }
+
             CheckForTagLine();
-            if (!fullNameToUse.StartsWith("Background") && !fullNameToUse.StartsWith("Cleanup"))
+            switch (Configuration.TestFramework)
             {
-                switch (Configuration.TestFramework)
-                {
-                    case "MSTest":
-                        TestPrint("    [TestMethod]");
-                        break;
-                    case "NUnit":
-                        TestPrint("    [Test]");
-                        break;
-                    default:
-                        TestPrint("    [TestMethod]");
-                        break;
-                }
-                TestPrint("    public void Test_" + fullNameToUse + "(){");
-                TestPrint("         " + glueClass + " " + glueObject + " = new " + glueClass + "();");
+                case "MSTest":
+                    TestPrint("[TestMethod]");
+                    break;
+                case "NUnit":
+                    TestPrint("[Test]");
+                    break;
+                default:
+                    TestPrint("[TestMethod]");
+                    break;
             }
-            else
-                TestPrint("    void Test_" + fullNameToUse + "(" + glueClass + " " + glueObject + "){");
+
+            TestPrint("    public void Test_" + fullNameToUse + "(){");
+            TestPrint("         " + glueClass + " " + glueObject + " = new " + glueClass + "();");
+
 
             if (Configuration.LogIt)
             {
-                TestPrint("        Log(" + "\"" + fullNameToUse + "\"" + ");");
+                TestPrint($"        Log(\"{fullNameToUse}\");");
             }
+
             if (addBackground)
             {
-                TestPrint("        Test_Background(" + glueObject + ");");
+                TestPrint($"        Test_Background({glueObject});");
             }
         }
+
+        private void ActOnBackground(string fullName)
+        {
+            Console.WriteLine("In background");
+            backgroundCount++;
+            string fullNameToUse = fullName;
+            finalCleanup = false;
+
+            if (backgroundCount > 1)
+            {
+                Error("More than one Background statement");
+                fullNameToUse += backgroundCount.ToString();
+            }
+
+            stepNumberInScenario = 0;
+
+            if (firstScenario)
+            {
+                firstScenario = false;
+            }
+            else
+            {
+                TestPrint("        }"); // End previous scenario
+            }
+
+            TestPrint($"    void Test_{fullNameToUse}({glueClass} {glueObject}){{");
+            if (Configuration.LogIt)
+            {
+                TestPrint($"        Log(\"{fullNameToUse}\");");
+            }
+        }
+
+        private void ActOnCleanup(string fullName)
+        {
+            Console.WriteLine("In cleanup");
+            cleanupCount++;
+            finalCleanup = false;
+            string fullNameToUse = fullName;
+
+            if (cleanupCount > 1)
+            {
+                Error("More than one cleanup statement");
+                fullNameToUse += cleanupCount.ToString();
+            }
+
+            stepNumberInScenario = 0;
+
+            if (firstScenario)
+            {
+                firstScenario = false;
+            }
+            else
+            {
+                TestPrint("        }"); // End previous scenario
+            }
+
+            TestPrint($"    void Test_{fullNameToUse}({glueClass} {glueObject}){{");
+            if (Configuration.LogIt)
+            {
+                TestPrint($"        Log(\"{fullNameToUse}\");");
+            }
+        }
+
 
         private string LogIt()
         {
@@ -530,7 +591,7 @@ namespace GherkinExecutorForCSharp
                     + "feature.txt " + value);
         }
 
-       
+
         public static string QuoteIt(string defaultVal)
         {
             return "\"" + defaultVal + "\"";
@@ -592,7 +653,7 @@ namespace GherkinExecutorForCSharp
                 Error("IO ERROR ");
             }
         }
-private void CheckForTagLine()
+        private void CheckForTagLine()
         {
             if (string.IsNullOrEmpty(tagLine))
                 return;
@@ -628,11 +689,12 @@ private void CheckForTagLine()
 
         private void EndUp()
         {
-            if (finalCleanup)
+            if (finalCleanup) 
             {
                 TestPrint("        Test_Cleanup(" + glueObject + "); // at the end");
             }
-            TestPrint("        }");   // End last scenario
+            if (scenarioCount > 0)
+                TestPrint("        }");   // End last scenario
             TestPrint("    }"); // End the class
             TestPrint("}"); // end the namespace 
             TestPrint("");
@@ -867,7 +929,7 @@ private void CheckForTagLine()
         private static void ProcessArguments(string[] args)
         {
             PrintFlow("Optional arguments are logIt inTest searchTree traceOn");
-            bool filterNext = false; 
+            bool filterNext = false;
             foreach (string arg in args)
             {
                 PrintFlow("Program argument: " + arg);
@@ -928,7 +990,7 @@ private void CheckForTagLine()
             ProcessArguments(raw.ToArray());
         }
 
-public static void ReadFilterList()
+        public static void ReadFilterList()
         {
             string filepath = Configuration.FeatureSubDirectory + "filter.txt";
             PrintFlow("Path is " + filepath);
@@ -1233,7 +1295,7 @@ public static void ReadFilterList()
 
             internal void goToEnd()
             {
-                index = linesIn.Count; 
+                index = linesIn.Count;
             }
         }
         public record Pair<K, V>(K key, V value)
@@ -1260,7 +1322,7 @@ public static void ReadFilterList()
         class StepConstruct
         {
             private int stepNumberInScenario;
-            private string glueObject = ""; 
+            private string glueObject = "";
             private Translate translate;
             private TemplateConstruct? templateConstruct;
 
@@ -1790,7 +1852,7 @@ public static void ReadFilterList()
             public DataConstruct(Translate? other)
             {
                 if (other == null)
-                    Environment.Exit(-100); 
+                    Environment.Exit(-100);
                 this.translate = other;
             }
 
@@ -1909,8 +1971,8 @@ public static void ReadFilterList()
 
                     """;
                     if (PrimitiveDataType(variable))
-                       onePart =
-                       """
+                        onePart =
+                        """
                             hashCode ^= NAME.GetHashCode();
  
                        """;
@@ -2686,77 +2748,77 @@ public static void ReadFilterList()
 
             public static readonly List<string> FeatureFiles = new List<string>
             {
-                 // "starting.feature", // Something to try out after setup
+                // "starting.feature", // Something to try out after setup
                 // "full_test.feature.sav" // used for testing Translate
             };
         }
-    }
-static class TagFilterEvaluator
-    {
-        // Author is Microsoft CoPilot
 
-        public static bool ShouldNotExecute(List<string> words, string filterExpression)
+        public static class TagFilterEvaluator
         {
-            HashSet<string> scenarioTags = new HashSet<string>(words);
-            return !ShouldExecute(scenarioTags, filterExpression);
-        }
+            // Author is Microsoft CoPilot
 
-        public static bool ShouldExecute(HashSet<string> scenarioTags, string filterExpression)
-        {
-            if (string.IsNullOrWhiteSpace(filterExpression))
-                return true;
-
-            List<HashSet<string>> requiredConditions = new List<HashSet<string>>();
-            HashSet<string> excludedTags = new HashSet<string>();
-
-            // Parse the expression into required and excluded conditions
-            ParseExpression(filterExpression, requiredConditions, excludedTags);
-
-            // Check if the scenario contains any excluded tags
-            bool hasExcludedTag = scenarioTags.Any(excludedTags.Contains);
-
-            // Check if the scenario matches any required condition group (OR logic)
-            bool matchesRequired = !requiredConditions.Any() ||
-                                   requiredConditions.Any(scenarioTags.IsSupersetOf);
-
-            // Execute if it meets a required condition AND does NOT have an excluded tag
-            return matchesRequired && !hasExcludedTag;
-        }
-
-        private static void ParseExpression(string expression, List<HashSet<string>> requiredConditions, HashSet<string> excludedTags)
-        {
-            // Split by "OR" to get groups
-            string[] groups = expression.Split(new[] { " OR " }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string group in groups)
+            public static bool ShouldNotExecute(List<string> words, string filterExpression)
             {
-                HashSet<string> tags = new HashSet<string>();
+                HashSet<string> scenarioTags = new HashSet<string>(words);
+                return !ShouldExecute(scenarioTags, filterExpression);
+            }
 
-                // Split each group by "AND"
-                string[] elements = group.Trim().Split(new[] { " AND " }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (string element in elements)
-                {
-                    string trimmedElement = element.Trim();
-                    if (trimmedElement.StartsWith("NOT "))
-                    {
-                        excludedTags.Add(trimmedElement.Replace("NOT ", "").Trim()); // Store excluded tags
-                    }
-                    else
-                    {
-                        tags.Add(trimmedElement); // Store required tags
-                    }
-                }
+            public static bool ShouldExecute(HashSet<string> scenarioTags, string filterExpression)
+            {
+                if (string.IsNullOrWhiteSpace(filterExpression))
+                    return true;
 
-                if (tags.Count > 0)
+                List<HashSet<string>> requiredConditions = new List<HashSet<string>>();
+                HashSet<string> excludedTags = new HashSet<string>();
+
+                // Parse the expression into required and excluded conditions
+                ParseExpression(filterExpression, requiredConditions, excludedTags);
+
+                // Check if the scenario contains any excluded tags
+                bool hasExcludedTag = scenarioTags.Any(excludedTags.Contains);
+
+                // Check if the scenario matches any required condition group (OR logic)
+                bool matchesRequired = !requiredConditions.Any() ||
+                                       requiredConditions.Any(scenarioTags.IsSupersetOf);
+
+                // Execute if it meets a required condition AND does NOT have an excluded tag
+                return matchesRequired && !hasExcludedTag;
+            }
+
+            private static void ParseExpression(string expression, List<HashSet<string>> requiredConditions, HashSet<string> excludedTags)
+            {
+                // Split by "OR" to get groups
+                string[] groups = expression.Split(new[] { " OR " }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string group in groups)
                 {
-                    requiredConditions.Add(tags);
+                    HashSet<string> tags = new HashSet<string>();
+
+                    // Split each group by "AND"
+                    string[] elements = group.Trim().Split(new[] { " AND " }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string element in elements)
+                    {
+                        string trimmedElement = element.Trim();
+                        if (trimmedElement.StartsWith("NOT "))
+                        {
+                            excludedTags.Add(trimmedElement.Replace("NOT ", "").Trim()); // Store excluded tags
+                        }
+                        else
+                        {
+                            tags.Add(trimmedElement); // Store required tags
+                        }
+                    }
+
+                    if (tags.Count > 0)
+                    {
+                        requiredConditions.Add(tags);
+                    }
                 }
             }
         }
+
+
     }
-
-
 }
-
 
 
 

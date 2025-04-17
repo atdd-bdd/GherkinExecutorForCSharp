@@ -2,6 +2,7 @@ namespace gherkinexecutor.Feature_Import {
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Numerics;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
@@ -16,7 +17,6 @@ public class Feature_Import_glue {
              // Add calls to production code and asserts
               ImportDataInternal i = value.ToImportDataInternal();
               }
-        throw new NotImplementedException();
     }
 
     public void Given_this_data_should_fail(List<ImportData> values ) {
@@ -26,7 +26,6 @@ public class Feature_Import_glue {
              // Add calls to production code and asserts
               ImportDataInternal i = value.ToImportDataInternal();
               }
-        throw new NotImplementedException();
     }
 
     }

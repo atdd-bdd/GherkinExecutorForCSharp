@@ -1,14 +1,14 @@
-*import.feature
-*ata_definition.feature
+import.feature
+*data_definition.feature
 *datatype.feature
-*background.feature
+background.feature
 *define.feature
 *examples.feature
 *include.feature
 *full_test.feature.sav
-optional_tests.feature
+*optional_tests.feature
 *json.feature
 *tables_and_strings.feature
 *tic_tac_toe.feature 
-data_definition_error.feature
+*data_definition_error.feature
 
