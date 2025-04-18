@@ -1,9 +1,9 @@
-import.feature
+* import.feature
 *data_definition.feature
 *datatype.feature
 background.feature
 *define.feature
-*examples.feature
+examples.feature
 *include.feature
 *full_test.feature.sav
 *optional_tests.feature

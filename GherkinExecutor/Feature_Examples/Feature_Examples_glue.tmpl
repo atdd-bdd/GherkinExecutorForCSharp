@@ -2,6 +2,7 @@ namespace gherkinexecutor.Feature_Examples {
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 public class Feature_Examples_glue {
@@ -15,7 +16,6 @@ public class Feature_Examples_glue {
              // Add calls to production code and asserts
               FandCInternal i = value.ToFandCInternal();
               }
-        throw new NotImplementedException();
     }
 
     public void Rule_ID_must_have_exactly_5_letters_and_begin_with_Q(List<ValueValid> values ) {
@@ -25,7 +25,6 @@ public class Feature_Examples_glue {
              // Add calls to production code and asserts
               ValueValidInternal i = value.ToValueValidInternal();
               }
-        throw new NotImplementedException();
     }
 
     public void Given_list_of_numbers(List<LabelValue> values ) {
@@ -35,7 +34,6 @@ public class Feature_Examples_glue {
              // Add calls to production code and asserts
               LabelValueInternal i = value.ToLabelValueInternal();
               }
-        throw new NotImplementedException();
     }
 
     public void When_filtered_by_ID_with_value(List<List<string>> values ) {
@@ -44,7 +42,6 @@ public class Feature_Examples_glue {
              Console.WriteLine(value);
              // Add calls to production code and asserts
               }
-        throw new NotImplementedException();
     }
 
     public void Then_sum_is(List<List<string>> values ) {
@@ -53,7 +50,6 @@ public class Feature_Examples_glue {
              Console.WriteLine(value);
              // Add calls to production code and asserts
               }
-        throw new NotImplementedException();
     }
 
     public void When_filtered_by(List<FilterValue> values ) {
@@ -63,7 +59,6 @@ public class Feature_Examples_glue {
              // Add calls to production code and asserts
               FilterValueInternal i = value.ToFilterValueInternal();
               }
-        throw new NotImplementedException();
     }
 
     public void Then_result(List<ResultValue> values ) {
@@ -73,7 +68,6 @@ public class Feature_Examples_glue {
              // Add calls to production code and asserts
               ResultValueInternal i = value.ToResultValueInternal();
               }
-        throw new NotImplementedException();
     }
 
     }

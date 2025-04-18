@@ -5,6 +5,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GherkinExecutorForCSharp
 {
@@ -153,7 +154,7 @@ namespace GherkinExecutorForCSharp
             List<string> comment = new List<string>();
             if ((pass == 3 || pass == 2) && line.Trim().StartsWith(TAG_INDICATOR))
             {
-                Console.WriteLine("Found tag " + line);
+                
                 tagLine = line;
                 tagLineNumber = dataIn.GetLineNumber();
             }
@@ -475,7 +476,7 @@ namespace GherkinExecutorForCSharp
 
         private void ActOnBackground(string fullName)
         {
-            Console.WriteLine("In background");
+ 
             backgroundCount++;
             string fullNameToUse = fullName;
             finalCleanup = false;
@@ -506,7 +507,7 @@ namespace GherkinExecutorForCSharp
 
         private void ActOnCleanup(string fullName)
         {
-            Console.WriteLine("In cleanup");
+
             cleanupCount++;
             finalCleanup = false;
             string fullNameToUse = fullName;
@@ -713,6 +714,7 @@ namespace GherkinExecutorForCSharp
                 Console.Error.WriteLine("*** Error in translation, scan the output");
                 Environment.Exit(-1);
             }
+            dataConstruct.EndOneDataFile();
         }
 
         private Pair<string, List<string>> LookForFollow()
@@ -1312,7 +1314,7 @@ namespace GherkinExecutorForCSharp
             }
 
 
-            public String toString()
+            public string toString()
             {
                 return "Pair{" + "key=" + key + ", value=" + value + '}';
             }
@@ -1337,7 +1339,7 @@ namespace GherkinExecutorForCSharp
             {
                 glueObject = translate.glueObject;
                 stepNumberInScenario += 1;
-                Pair<String, List<String>> follow = translate.LookForFollow();
+                Pair<string, List<string>> follow = translate.LookForFollow();
                 string followType = follow.getFirst();
                 List<string> table = follow.GetSecond();
                 translate.TestPrint("");
@@ -1897,7 +1899,7 @@ namespace GherkinExecutorForCSharp
                     providedOtherClassName = false;
                     internalClassName = className + "Internal";
                 }
-                Pair<String, List<string>> follow = translate.LookForFollow();
+                Pair<string, List<string>> follow = translate.LookForFollow();
                 string followType = follow.getFirst();
                 List<string> table = follow.GetSecond();
                 if (!followType.Equals("TABLE"))
@@ -2053,6 +2055,8 @@ namespace GherkinExecutorForCSharp
 
             private void EndDataFile()
             {
+                if (Configuration.oneDataFile)
+                    return;
                 try
                 {
                     dataDefinitionFile?.Close();
@@ -2063,8 +2067,35 @@ namespace GherkinExecutorForCSharp
                 }
             }
 
+            static bool oneDataFileStarted = false;
+            public void EndOneDataFile()
+            {
+                if (!Configuration.oneDataFile)
+                    return;
+                if (!oneDataFileStarted)
+                    return;
+                try
+                {
+ 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                    dataDefinitionFile.Close();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+                    oneDataFileStarted = false;
+                }
+                catch (IOException e)
+                {
+                    throw new Exception("An error occurred while closing the data file", e);
+                }
+            }
+
             private void StartDataFile(string className, bool createTmpl)
             {
+                if (Configuration.oneDataFile)
+                {
+
+                    StartOneDataFile();
+                    return;
+                }
                 string extension = Configuration.DataDefinitionFileExtension;
                 if (createTmpl)
                     extension = "tmpl";
@@ -2072,6 +2103,29 @@ namespace GherkinExecutorForCSharp
                         translate.featureName + "/" + className + "." + extension;
                 try
                 {
+                    dataDefinitionFile = new StreamWriter(dataDefinitionPathname, false);
+                }
+                catch (IOException e)
+                {
+                    translate.Error("IO Exception in setting up the files " + e);
+                    translate.Error(" Writing " + dataDefinitionPathname);
+                }
+            }
+            private void StartOneDataFile()
+            {
+                if (oneDataFileStarted)
+                    return;
+
+                oneDataFileStarted = true;
+                string extension = Configuration.DataDefinitionFileExtension;
+
+                string dataDefinitionPathname = Configuration.TestSubDirectory + translate.featureDirectory +
+                    translate.featureName + "/" + translate.featureName + "_data" +
+                    "." + extension;
+
+                try
+                {
+
                     dataDefinitionFile = new StreamWriter(dataDefinitionPathname, false);
                 }
                 catch (IOException e)
@@ -2743,7 +2797,7 @@ namespace GherkinExecutorForCSharp
                 "using System.Text.RegularExpressions;"
         };
 
-            public static String FilterExpression = ""; // will hold filter expression from command line or file
+            public static string FilterExpression = ""; // will hold filter expression from command line or file
 
 
             public static readonly List<string> FeatureFiles = new List<string>
@@ -2751,6 +2805,10 @@ namespace GherkinExecutorForCSharp
                 // "starting.feature", // Something to try out after setup
                 // "full_test.feature.sav" // used for testing Translate
             };
+
+            public static bool oneDataFile = true;  // All data into one file 
+                                                        // This should not be set to true for Java 
+
         }
 
         public static class TagFilterEvaluator
