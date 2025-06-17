@@ -20,12 +20,12 @@ This documents the  setup required for C#.    It assumes you have some experienc
   
   Download` translate.cs`  [GherkinExecutorForCSharp/Translaste.cs at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/Translaste.cs)
   
-  Download starting.feature [GherkinExecutorForCSharp/GherkinExecutor/starting.feature at main · atdd-bdd/GherkinExecutorForCSharp · GitHub ](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/starting.feature)
+  Download starting.featurex [GherkinExecutorForCSharp/GherkinExecutor/starting.featurex at main · atdd-bdd/GherkinExecutorForCSharp · GitHub ](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/starting.featurex)
 
 - In the `GherkinExecutor `folder, create a `features.txt` file that contains 
 
 ```
-starting.feature 
+starting.featurex 
 ```
 
         In the same folder, create a `options.txt` file that is empty 

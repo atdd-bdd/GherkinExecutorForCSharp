@@ -2802,7 +2802,7 @@ namespace GherkinExecutorForCSharp
 
             public static readonly List<string> FeatureFiles = new List<string>
             {
-                // "starting.feature", // Something to try out after setup
+                // "starting.featurex", // Something to try out after setup
                 // "full_test.feature.sav" // used for testing Translate
             };
 

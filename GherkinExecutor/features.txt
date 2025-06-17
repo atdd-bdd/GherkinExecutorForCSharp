@@ -1,14 +1,14 @@
-* import.feature
-*data_definition.feature
-*datatype.feature
-background.feature
-*define.feature
-examples.feature
-*include.feature
-*full_test.feature.sav
-*optional_tests.feature
-*json.feature
-*tables_and_strings.feature
-*tic_tac_toe.feature 
-*data_definition_error.feature
+* import.featurex
+*data_definition.featurex
+*datatype.featurex
+background.featurex
+*define.featurex
+examples.featurex
+*include.featurex
+*full_test.featurex.sav
+*optional_tests.featurex
+*json.featurex
+*tables_and_strings.featurex
+*tic_tac_toe.featurex 
+*data_definition_error.featurex
 
