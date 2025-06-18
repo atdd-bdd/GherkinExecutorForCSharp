@@ -2,7 +2,9 @@
 
 The Gherkin Executor for C# converts Gherkin files into unit tests.   
 
-See the full documentation at [GherkinExecutorBase/README.md at main · atdd-bdd/GherkinExecutorBase · GitHub](https://github.com/atdd-bdd/GherkinExecutorBase/blob/main/README.md)
+See the full documentation at [GitHub - atdd-bdd/GherkinExecutorBase: This is the base for Gherkin Executor containing Documentation and Examples](https://github.com/atdd-bdd/GherkinExecutorBase)
+
+
 
 
 
@@ -15,11 +17,8 @@ This documents the  setup required for C#.    It assumes you have some experienc
 -  Add a folder:   `GherkinExecutor  `
 
 - Go to [GitHub - atdd-bdd/GherkinExecutorForCSharp](https://github.com/atdd-bdd/GherkinExecutorForCSharp)
-  
   Into `GherkinExecutor` folder:
-  
   Download` translate.cs`  [GherkinExecutorForCSharp/Translaste.cs at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/Translaste.cs)
-  
   Download starting.featurex [GherkinExecutorForCSharp/GherkinExecutor/starting.featurex at main · atdd-bdd/GherkinExecutorForCSharp · GitHub ](https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/starting.featurex)
 
 - In the `GherkinExecutor `folder, create a `features.txt` file that contains 
@@ -65,6 +64,5 @@ If you add a `Scenario `to the feature file, you need to rerun `Translate`.     
 
 
 If you want to compare two lists of objects, you can use the following.  Replace `ClassName `with the actual data class:
-
            bool result = expectedList.SequenceEqual(actualList, new ClassName.ClassNameComparer());
             Console.WriteLine("SequenceEqual: " + result);
