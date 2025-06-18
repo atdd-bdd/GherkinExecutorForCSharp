@@ -2397,6 +2397,10 @@ namespace GherkinExecutorForCSharp
                         return "int";
                     case "boolean":
                         return "Boolean";
+                    case "Text":
+                        return "string";
+                    case "text":
+                        return "string"; 
                     default:
                         return s;
                 }

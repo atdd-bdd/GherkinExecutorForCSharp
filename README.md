@@ -2,7 +2,7 @@
 
 The Gherkin Executor for C# converts Gherkin files into unit tests.   
 
-See the full documentation at [GherkinExecutorForJava/README.md at main · atdd-bdd/GherkinExecutorForJava · GitHub](https://github.com/atdd-bdd/GherkinExecutorForJava/blob/main/README.md)
+See the full documentation at [GherkinExecutorBase/README.md at main · atdd-bdd/GherkinExecutorBase · GitHub](https://github.com/atdd-bdd/GherkinExecutorBase/blob/main/README.md)
 
 
 
