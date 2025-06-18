@@ -4,9 +4,13 @@ The Gherkin Executor for C# converts Gherkin files into unit tests.
 
 See the full documentation at [GitHub - atdd-bdd/GherkinExecutorBase: This is the base for Gherkin Executor containing Documentation and Examples](https://github.com/atdd-bdd/GherkinExecutorBase)
 
+You can see an example of a featurex file at:
 
+https://github.com/atdd-bdd/GherkinExecutorForCSharp/blob/main/GherkinExecutor/examples.featurex
 
+The generated code, as well as the altered glue file are in this directory:: [
 
+[GherkinExecutorForCSharp/GherkinExecutor/Feature_Examples at main · atdd-bdd/GherkinExecutorForCSharp · GitHub](https://github.com/atdd-bdd/GherkinExecutorForCSharp/tree/main/GherkinExecutor/Feature_Examples)
 
 This documents the  setup required for C#.    It assumes you have some experience with running unit tests in Visual Studio.   
 
